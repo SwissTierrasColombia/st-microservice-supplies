@@ -8,8 +8,11 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import com.ai.st.microservice.supplies.business.SupplyClassBusiness;
+import com.ai.st.microservice.supplies.business.SupplyStateBusiness;
 import com.ai.st.microservice.supplies.entities.SupplyClassEntity;
+import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 import com.ai.st.microservice.supplies.services.ISupplyClassService;
+import com.ai.st.microservice.supplies.services.ISupplyStateService;
 
 @Component
 public class StMicroserviceSuppliesApplicationStartup implements ApplicationListener<ContextRefreshedEvent> {
@@ -19,10 +22,14 @@ public class StMicroserviceSuppliesApplicationStartup implements ApplicationList
 	@Autowired
 	private ISupplyClassService supplyClassService;
 
+	@Autowired
+	private ISupplyStateService supplyStateService;
+
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		log.info("ST - Loading Domains ... ");
 		this.initClasses();
+		this.initStates();
 	}
 
 	public void initClasses() {
@@ -44,6 +51,36 @@ public class StMicroserviceSuppliesApplicationStartup implements ApplicationList
 				log.info("The domains 'classes' have been loaded!");
 			} catch (Exception e) {
 				log.error("Failed to load 'classes' domains");
+			}
+
+		}
+
+	}
+
+	public void initStates() {
+		Long countStates = supplyStateService.getCount();
+		if (countStates == 0) {
+
+			try {
+
+				SupplyStateEntity stateActive = new SupplyStateEntity();
+				stateActive.setId(SupplyStateBusiness.SUPPLY_STATE_ACTIVE);
+				stateActive.setName("ACTIVO");
+				supplyStateService.createSupplyState(stateActive);
+
+				SupplyStateEntity stateInactive = new SupplyStateEntity();
+				stateInactive.setId(SupplyStateBusiness.SUPPLY_STATE_INACTIVE);
+				stateInactive.setName("INACTIVO");
+				supplyStateService.createSupplyState(stateInactive);
+
+				SupplyStateEntity stateRemoved = new SupplyStateEntity();
+				stateRemoved.setId(SupplyStateBusiness.SUPPLY_STATE_REMOVED);
+				stateRemoved.setName("ELIMINADO");
+				supplyStateService.createSupplyState(stateRemoved);
+
+				log.info("The domains 'states' have been loaded!");
+			} catch (Exception e) {
+				log.error("Failed to load 'states' domains");
 			}
 
 		}
