@@ -1,8 +1,10 @@
 package com.ai.st.microservice.supplies.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,6 +52,12 @@ public class SupplyEntity {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(schema = "supplies", name = "supplies_x_classes", joinColumns = @JoinColumn(name = "supply_id"), inverseJoinColumns = @JoinColumn(name = "class_id"))
 	List<SupplyClassEntity> classes;
+
+	@OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
+	private List<SupplyAttachmentEntity> attachments = new ArrayList<SupplyAttachmentEntity>();
+
+	@OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
+	private List<SupplyOwnerEntity> owners = new ArrayList<SupplyOwnerEntity>();
 
 	public SupplyEntity() {
 
@@ -116,6 +125,22 @@ public class SupplyEntity {
 
 	public void setClasses(List<SupplyClassEntity> classes) {
 		this.classes = classes;
+	}
+
+	public List<SupplyAttachmentEntity> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<SupplyAttachmentEntity> attachments) {
+		this.attachments = attachments;
+	}
+
+	public List<SupplyOwnerEntity> getOwners() {
+		return owners;
+	}
+
+	public void setOwners(List<SupplyOwnerEntity> owners) {
+		this.owners = owners;
 	}
 
 }

@@ -25,4 +25,9 @@ public class SupplyStateService implements ISupplyStateService {
 		return supplyStateRepository.save(supplyStateEntity);
 	}
 
+	@Override
+	public SupplyStateEntity getSupplyStateById(Long id) {
+		return supplyStateRepository.findById(id).orElse(null);
+	}
+
 }

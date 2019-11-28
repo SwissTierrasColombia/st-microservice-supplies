@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "supplies_attachments", schema = "supplies")
-public class AttachmentEntity {
+public class SupplyAttachmentEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,7 @@ public class AttachmentEntity {
 	@JoinColumn(name = "supply_id", referencedColumnName = "id", nullable = false)
 	private SupplyEntity supply;
 
-	public AttachmentEntity() {
+	public SupplyAttachmentEntity() {
 
 	}
 

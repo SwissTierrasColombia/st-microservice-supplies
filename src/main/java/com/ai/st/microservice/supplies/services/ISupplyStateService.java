@@ -8,4 +8,6 @@ public interface ISupplyStateService {
 
 	public SupplyStateEntity createSupplyState(SupplyStateEntity supplyStateEntity);
 
+	public SupplyStateEntity getSupplyStateById(Long id);
+
 }
