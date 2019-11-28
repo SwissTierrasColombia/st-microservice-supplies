@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ai.st.microservice.supplies.business.SupplyBusiness;
 import com.ai.st.microservice.supplies.dto.CreateSupplyDto;
@@ -44,8 +42,7 @@ public class SupplyV1Controller {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Create supply", response = SupplyDto.class),
 			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
 	@ResponseBody
-	public ResponseEntity<Object> createSupply(@ModelAttribute CreateSupplyDto requestCreateSAupply,
-			@RequestParam(name = "files[]", required = false) MultipartFile[] files) {
+	public ResponseEntity<Object> createSupply(@RequestBody CreateSupplyDto requestCreateSAupply) {
 
 		HttpStatus httpStatus = null;
 		Object responseDto = null;
@@ -86,7 +83,7 @@ public class SupplyV1Controller {
 			}
 
 			responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations, typeSupplyCode,
-					requestCreateSAupply.getUrl(), files, owners);
+					requestCreateSAupply.getUrl(), requestCreateSAupply.getUrlsDocumentaryRepository(), owners);
 			httpStatus = HttpStatus.CREATED;
 
 		} catch (InputValidationException e) {

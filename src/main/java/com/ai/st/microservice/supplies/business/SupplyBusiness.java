@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ai.st.microservice.supplies.dto.CreateSupplyOwnerDto;
 import com.ai.st.microservice.supplies.dto.SupplyAttachmentDto;
@@ -32,9 +31,10 @@ public class SupplyBusiness {
 	private ISupplyService supplyService;
 
 	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
-			String url, MultipartFile[] files, List<CreateSupplyOwnerDto> owners) throws BusinessException {
+			String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners)
+			throws BusinessException {
 
-		if (files.length == 0 && url.isEmpty()) {
+		if (urlsDocumentaryRepository.size() == 0 && url.isEmpty()) {
 			throw new BusinessException("El insumo debe contener un archivo o una url.");
 		}
 
@@ -53,15 +53,14 @@ public class SupplyBusiness {
 
 		SupplyEntity supplyEntity = new SupplyEntity();
 
-		// attachtements
+		// attachments
 		List<SupplyAttachmentEntity> attachments = new ArrayList<SupplyAttachmentEntity>();
-		if (files.length > 0) {
-			for (MultipartFile file : files) {
-				// TODO: Save file in documentary repository
+		if (urlsDocumentaryRepository.size() > 0) {
+			for (String urlDocumentaryRepository : urlsDocumentaryRepository) {
 				SupplyAttachmentEntity attachementEntity = new SupplyAttachmentEntity();
 				attachementEntity.setCreatedAt(new Date());
 				attachementEntity.setSupply(supplyEntity);
-				attachementEntity.setUrlDocumentaryRepository("test");
+				attachementEntity.setUrlDocumentaryRepository(urlDocumentaryRepository);
 				attachments.add(attachementEntity);
 			}
 		}
@@ -97,6 +96,7 @@ public class SupplyBusiness {
 		supplyDto.setObservations(supplyEntity.getObservations());
 		supplyDto.setUrl(supplyEntity.getUrl());
 		supplyDto.setState(new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
+		supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
 
 		List<SupplyOwnerDto> ownersDto = new ArrayList<SupplyOwnerDto>();
 		for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {

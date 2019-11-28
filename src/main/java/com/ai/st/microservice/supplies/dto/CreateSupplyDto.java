@@ -27,8 +27,12 @@ public class CreateSupplyDto implements Serializable {
 	@ApiModelProperty(required = true, notes = "Owners")
 	private List<CreateSupplyOwnerDto> owners;
 
+	@ApiModelProperty(required = false, notes = "Urls documentary repository")
+	private List<String> urlsDocumentaryRepository;
+
 	public CreateSupplyDto() {
 		this.owners = new ArrayList<CreateSupplyOwnerDto>();
+		this.urlsDocumentaryRepository = new ArrayList<String>();
 	}
 
 	public String getUrl() {
@@ -69,6 +73,14 @@ public class CreateSupplyDto implements Serializable {
 
 	public void setOwners(List<CreateSupplyOwnerDto> owners) {
 		this.owners = owners;
+	}
+
+	public List<String> getUrlsDocumentaryRepository() {
+		return urlsDocumentaryRepository;
+	}
+
+	public void setUrlsDocumentaryRepository(List<String> urlsDocumentaryRepository) {
+		this.urlsDocumentaryRepository = urlsDocumentaryRepository;
 	}
 
 }
