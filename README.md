@@ -8,9 +8,11 @@ Microservice that allows the loading and administration of supplies for a munici
 $ mvn spring-boot:run
 ```
 
-## Configuration
+## Configuration 
 
-Modify the database connection in the st-microservice-supplies/src/main/resources/**application.yml** file
+### Database connection
+
+You must create a database in PostgreSQL with a **scheme** called "**supplies**" and then configure the connection data in the st-microservice-supplies/src/main/resources/**application.yml** file
 
 ```yml
 spring:
