@@ -1,5 +1,7 @@
 package com.ai.st.microservice.supplies.services;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,11 @@ public class SupplyService implements ISupplyService {
 	@Transactional
 	public SupplyEntity createSupply(SupplyEntity supplyEntity) {
 		return supplyRepository.save(supplyEntity);
+	}
+
+	@Override
+	public List<SupplyEntity> getSuppliesByMunicipalityCode(String municipalityCode) {
+		return supplyRepository.findByMunicipalityCode(municipalityCode);
 	}
 
 }

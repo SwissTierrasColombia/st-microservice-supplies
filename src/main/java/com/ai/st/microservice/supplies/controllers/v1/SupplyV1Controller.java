@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,11 +67,11 @@ public class SupplyV1Controller {
 			if (typeSupplyCode == null || typeSupplyCode <= 0) {
 				throw new InputValidationException("El tipo de insumo es inválido.");
 			}
-			
+
 			// validation owners
-			List<CreateSupplyOwnerDto> owners = requestCreateSAupply.getOwners(); 
+			List<CreateSupplyOwnerDto> owners = requestCreateSAupply.getOwners();
 			if (owners.size() > 0) {
-				for (CreateSupplyOwnerDto owner: owners) {
+				for (CreateSupplyOwnerDto owner : owners) {
 					if (owner.getOwnerCode() == null || owner.getOwnerCode() <= 0) {
 						throw new InputValidationException("El código de propietario es inválido.");
 					}
@@ -96,6 +97,33 @@ public class SupplyV1Controller {
 			responseDto = new ErrorDto(e.getMessage(), 2);
 		} catch (Exception e) {
 			log.error("Error SupplyV1Controller@createSupply#General ---> " + e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			responseDto = new ErrorDto(e.getMessage(), 3);
+		}
+
+		return new ResponseEntity<>(responseDto, httpStatus);
+	}
+
+	@RequestMapping(value = "{municipalityId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Get supplies by municipality")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Get supplies", response = SupplyDto.class, responseContainer = "List"),
+			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
+	@ResponseBody
+	public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId) {
+
+		HttpStatus httpStatus = null;
+		Object responseDto = null;
+
+		try {
+			responseDto = supplyBusiness.getSuppliesByMunicipality(municipalityId);
+			httpStatus = HttpStatus.OK;
+		} catch (BusinessException e) {
+			log.error("Error SupplyV1Controller@getSuppliesByMunicipality#Business ---> " + e.getMessage());
+			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+			responseDto = new ErrorDto(e.getMessage(), 2);
+		} catch (Exception e) {
+			log.error("Error SupplyV1Controller@getSuppliesByMunicipality#General ---> " + e.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			responseDto = new ErrorDto(e.getMessage(), 3);
 		}
