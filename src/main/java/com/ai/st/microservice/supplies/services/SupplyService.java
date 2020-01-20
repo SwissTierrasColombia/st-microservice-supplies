@@ -27,4 +27,9 @@ public class SupplyService implements ISupplyService {
 		return supplyRepository.findByMunicipalityCode(municipalityCode);
 	}
 
+	@Override
+	public SupplyEntity getSupplyById(Long id) {
+		return supplyRepository.findById(id).orElse(null);
+	}
+
 }

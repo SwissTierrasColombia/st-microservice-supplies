@@ -10,4 +10,6 @@ public interface ISupplyService {
 
 	public List<SupplyEntity> getSuppliesByMunicipalityCode(String municipalityCode);
 
+	public SupplyEntity getSupplyById(Long id);
+
 }

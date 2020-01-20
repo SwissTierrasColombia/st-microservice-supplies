@@ -104,7 +104,7 @@ public class SupplyV1Controller {
 		return new ResponseEntity<>(responseDto, httpStatus);
 	}
 
-	@RequestMapping(value = "{municipalityId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "municipality/{municipalityId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get supplies by municipality")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Get supplies", response = SupplyDto.class, responseContainer = "List"),
@@ -124,6 +124,34 @@ public class SupplyV1Controller {
 			responseDto = new ErrorDto(e.getMessage(), 2);
 		} catch (Exception e) {
 			log.error("Error SupplyV1Controller@getSuppliesByMunicipality#General ---> " + e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			responseDto = new ErrorDto(e.getMessage(), 3);
+		}
+
+		return new ResponseEntity<>(responseDto, httpStatus);
+	}
+
+	@RequestMapping(value = "{supplyId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Get supply by id")
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "Get supply", response = SupplyDto.class),
+			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
+	@ResponseBody
+	public ResponseEntity<?> getSupplyById(@PathVariable Long supplyId) {
+
+		HttpStatus httpStatus = null;
+		Object responseDto = null;
+
+		try {
+
+			responseDto = supplyBusiness.getSupplyById(supplyId);
+			httpStatus = (responseDto == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+
+		} catch (BusinessException e) {
+			log.error("Error SupplyV1Controller@getSupplyById#Business ---> " + e.getMessage());
+			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+			responseDto = new ErrorDto(e.getMessage(), 2);
+		} catch (Exception e) {
+			log.error("Error SupplyV1Controller@getSupplyById#General ---> " + e.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			responseDto = new ErrorDto(e.getMessage(), 3);
 		}

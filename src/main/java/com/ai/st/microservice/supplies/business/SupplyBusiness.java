@@ -89,6 +89,43 @@ public class SupplyBusiness {
 
 		supplyEntity = supplyService.createSupply(supplyEntity);
 
+		SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+
+		return supplyDto;
+	}
+
+	public List<SupplyDto> getSuppliesByMunicipality(String municipalityCode) throws BusinessException {
+
+		List<SupplyDto> suppliesDto = new ArrayList<>();
+
+		List<SupplyEntity> suppliesEntity = supplyService.getSuppliesByMunicipalityCode(municipalityCode);
+
+		if (suppliesEntity.size() > 0) {
+
+			for (SupplyEntity supplyEntity : suppliesEntity) {
+				SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+				suppliesDto.add(supplyDto);
+			}
+
+		}
+
+		return suppliesDto;
+	}
+
+	public SupplyDto getSupplyById(Long supplyId) throws BusinessException {
+
+		SupplyDto supplyDto = null;
+
+		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+		if (supplyEntity instanceof SupplyEntity) {
+			supplyDto = this.transformEntityToDto(supplyEntity);
+		}
+
+		return supplyDto;
+	}
+
+	protected SupplyDto transformEntityToDto(SupplyEntity supplyEntity) {
+
 		SupplyDto supplyDto = new SupplyDto();
 		supplyDto.setId(supplyEntity.getId());
 		supplyDto.setCreatedAt(supplyEntity.getCreatedAt());
@@ -120,55 +157,6 @@ public class SupplyBusiness {
 		supplyDto.setAttachments(attachmentsDto);
 
 		return supplyDto;
-	}
-
-	public List<SupplyDto> getSuppliesByMunicipality(String municipalityCode) throws BusinessException {
-
-		List<SupplyDto> suppliesDto = new ArrayList<>();
-
-		List<SupplyEntity> suppliesEntity = supplyService.getSuppliesByMunicipalityCode(municipalityCode);
-
-		if (suppliesEntity.size() > 0) {
-
-			for (SupplyEntity supplyEntity : suppliesEntity) {
-
-				SupplyDto supplyDto = new SupplyDto();
-				supplyDto.setId(supplyEntity.getId());
-				supplyDto.setCreatedAt(supplyEntity.getCreatedAt());
-				supplyDto.setMunicipalityCode(supplyEntity.getMunicipalityCode());
-				supplyDto.setObservations(supplyEntity.getObservations());
-				supplyDto.setUrl(supplyEntity.getUrl());
-				supplyDto.setState(
-						new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
-				supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
-
-				List<SupplyOwnerDto> ownersDto = new ArrayList<SupplyOwnerDto>();
-				for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {
-					SupplyOwnerDto ownerDto = new SupplyOwnerDto();
-					ownerDto.setCreatedAt(ownerEntity.getCreatedAt());
-					ownerDto.setId(ownerEntity.getId());
-					ownerDto.setOwnerCode(ownerEntity.getOwnerCode());
-					ownerDto.setOwnerType(ownerEntity.getOwnerType().name());
-					ownersDto.add(ownerDto);
-				}
-				supplyDto.setOwners(ownersDto);
-
-				List<SupplyAttachmentDto> attachmentsDto = new ArrayList<SupplyAttachmentDto>();
-				for (SupplyAttachmentEntity attachmentEntity : supplyEntity.getAttachments()) {
-					SupplyAttachmentDto attachmentDto = new SupplyAttachmentDto();
-					attachmentDto.setCreatedAt(attachmentEntity.getCreatedAt());
-					attachmentDto.setId(attachmentEntity.getId());
-					attachmentDto.setUrlDocumentaryRepository(attachmentEntity.getUrlDocumentaryRepository());
-					attachmentsDto.add(attachmentDto);
-				}
-				supplyDto.setAttachments(attachmentsDto);
-
-				suppliesDto.add(supplyDto);
-			}
-
-		}
-
-		return suppliesDto;
 	}
 
 }
