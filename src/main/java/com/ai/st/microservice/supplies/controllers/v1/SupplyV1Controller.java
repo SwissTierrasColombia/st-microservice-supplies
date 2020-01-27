@@ -62,12 +62,6 @@ public class SupplyV1Controller {
 				throw new InputValidationException("Las observaciones son requeridas.");
 			}
 
-			// validation type supply code
-			Long typeSupplyCode = requestCreateSAupply.getTypeSupplyCode();
-			if (typeSupplyCode == null || typeSupplyCode <= 0) {
-				throw new InputValidationException("El tipo de insumo es inválido.");
-			}
-
 			// validation owners
 			List<CreateSupplyOwnerDto> owners = requestCreateSAupply.getOwners();
 			if (owners.size() > 0) {
@@ -83,7 +77,8 @@ public class SupplyV1Controller {
 				throw new InputValidationException("El insumo debe tener al menos un propietario.");
 			}
 
-			responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations, typeSupplyCode,
+			responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations,
+					requestCreateSAupply.getTypeSupplyCode(), requestCreateSAupply.getRequestCode(),
 					requestCreateSAupply.getUrl(), requestCreateSAupply.getUrlsDocumentaryRepository(), owners);
 			httpStatus = HttpStatus.CREATED;
 

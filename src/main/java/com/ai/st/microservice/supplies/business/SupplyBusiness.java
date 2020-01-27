@@ -31,7 +31,7 @@ public class SupplyBusiness {
 	private ISupplyService supplyService;
 
 	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
-			String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners)
+			Long requestCode, String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners)
 			throws BusinessException {
 
 		if (urlsDocumentaryRepository.size() == 0 && url.isEmpty()) {
@@ -42,7 +42,8 @@ public class SupplyBusiness {
 		for (CreateSupplyOwnerDto owner : owners) {
 
 			// verify type emitter
-			if (!owner.getOwnerType().equals(OwnerTypeEnum.ENTITY.name())
+			if (!owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())
+					&& !owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())
 					&& !owner.getOwnerType().equals(OwnerTypeEnum.USER.name())) {
 				throw new BusinessException("El tipo de propietario es inválido.");
 			}
@@ -69,11 +70,20 @@ public class SupplyBusiness {
 		// owners
 		List<SupplyOwnerEntity> ownersEntity = new ArrayList<SupplyOwnerEntity>();
 		for (CreateSupplyOwnerDto owner : owners) {
+
 			SupplyOwnerEntity ownerEntity = new SupplyOwnerEntity();
 			ownerEntity.setCreatedAt(new Date());
 			ownerEntity.setOwnerCode(owner.getOwnerCode());
-			OwnerTypeEnum ownerType = (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY.name())) ? OwnerTypeEnum.ENTITY
-					: OwnerTypeEnum.USER;
+
+			OwnerTypeEnum ownerType = null;
+			if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())) {
+				ownerType = OwnerTypeEnum.ENTITY_MANAGER;
+			} else if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())) {
+				ownerType = OwnerTypeEnum.ENTITY_PROVIDER;
+			} else {
+				ownerType = OwnerTypeEnum.USER;
+			}
+
 			ownerEntity.setOwnerType(ownerType);
 			ownerEntity.setSupply(supplyEntity);
 			ownersEntity.add(ownerEntity);
@@ -85,6 +95,7 @@ public class SupplyBusiness {
 		supplyEntity.setObservations(observations);
 		supplyEntity.setState(supplyState);
 		supplyEntity.setTypeSupplyCode(typeSupplyCode);
+		supplyEntity.setRequestCode(requestCode);
 		supplyEntity.setUrl(url);
 
 		supplyEntity = supplyService.createSupply(supplyEntity);
@@ -134,6 +145,7 @@ public class SupplyBusiness {
 		supplyDto.setUrl(supplyEntity.getUrl());
 		supplyDto.setState(new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
 		supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
+		supplyDto.setRequestCode(supplyEntity.getRequestCode());
 
 		List<SupplyOwnerDto> ownersDto = new ArrayList<SupplyOwnerDto>();
 		for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {
