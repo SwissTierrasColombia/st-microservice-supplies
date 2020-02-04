@@ -37,6 +37,9 @@ public class SupplyDto implements Serializable {
 	@ApiModelProperty(required = false, notes = "Request code")
 	private Long requestCode;
 
+	@ApiModelProperty(required = false, notes = "Model version")
+	private String modelVersion;
+
 	@ApiModelProperty(required = true, notes = "Owners")
 	private List<SupplyOwnerDto> owners;
 
@@ -126,6 +129,14 @@ public class SupplyDto implements Serializable {
 
 	public void setRequestCode(Long requestCode) {
 		this.requestCode = requestCode;
+	}
+
+	public String getModelVersion() {
+		return modelVersion;
+	}
+
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
 	}
 
 }

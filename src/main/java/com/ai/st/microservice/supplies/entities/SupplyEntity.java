@@ -46,6 +46,9 @@ public class SupplyEntity {
 	@Column(name = "observations", nullable = true, length = 500)
 	private String observations;
 
+	@Column(name = "model_version", nullable = true, length = 20)
+	private String modelVersion;
+
 	@Column(name = "type_supply_code", nullable = true)
 	private Long typeSupplyCode;
 
@@ -152,6 +155,14 @@ public class SupplyEntity {
 
 	public void setRequestCode(Long requestCode) {
 		this.requestCode = requestCode;
+	}
+
+	public String getModelVersion() {
+		return modelVersion;
+	}
+
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
 	}
 
 }

@@ -31,8 +31,8 @@ public class SupplyBusiness {
 	private ISupplyService supplyService;
 
 	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
-			Long requestCode, String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners)
-			throws BusinessException {
+			Long requestCode, String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners,
+			String modelVersion) throws BusinessException {
 
 		if (urlsDocumentaryRepository.size() == 0 && url.isEmpty()) {
 			throw new BusinessException("El insumo debe contener un archivo o una url.");
@@ -98,6 +98,10 @@ public class SupplyBusiness {
 		supplyEntity.setRequestCode(requestCode);
 		supplyEntity.setUrl(url);
 
+		if (modelVersion != null && !modelVersion.isEmpty()) {
+			supplyEntity.setModelVersion(modelVersion);
+		}
+
 		supplyEntity = supplyService.createSupply(supplyEntity);
 
 		SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
@@ -146,6 +150,7 @@ public class SupplyBusiness {
 		supplyDto.setState(new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
 		supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
 		supplyDto.setRequestCode(supplyEntity.getRequestCode());
+		supplyDto.setModelVersion(supplyEntity.getModelVersion());
 
 		List<SupplyOwnerDto> ownersDto = new ArrayList<SupplyOwnerDto>();
 		for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {
