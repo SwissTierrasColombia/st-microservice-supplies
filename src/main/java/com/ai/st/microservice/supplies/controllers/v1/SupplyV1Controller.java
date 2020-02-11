@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -106,13 +107,14 @@ public class SupplyV1Controller {
 			@ApiResponse(code = 201, message = "Get supplies", response = SupplyDto.class, responseContainer = "List"),
 			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
 	@ResponseBody
-	public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId) {
+	public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId,
+			@RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "requests", required = false) List<Long> requests) {
 
 		HttpStatus httpStatus = null;
 		Object responseDto = null;
 
 		try {
-			responseDto = supplyBusiness.getSuppliesByMunicipality(municipalityId);
+			responseDto = supplyBusiness.getSuppliesByMunicipality(municipalityId, page, requests);
 			httpStatus = HttpStatus.OK;
 		} catch (BusinessException e) {
 			log.error("Error SupplyV1Controller@getSuppliesByMunicipality#Business ---> " + e.getMessage());

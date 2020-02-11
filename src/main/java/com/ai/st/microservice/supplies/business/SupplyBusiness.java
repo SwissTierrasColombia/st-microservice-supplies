@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.ai.st.microservice.supplies.dto.CreateSupplyOwnerDto;
+import com.ai.st.microservice.supplies.dto.DataPaginatedDto;
 import com.ai.st.microservice.supplies.dto.SupplyAttachmentDto;
 import com.ai.st.microservice.supplies.dto.SupplyDto;
 import com.ai.st.microservice.supplies.dto.SupplyOwnerDto;
@@ -109,19 +111,42 @@ public class SupplyBusiness {
 		return supplyDto;
 	}
 
-	public List<SupplyDto> getSuppliesByMunicipality(String municipalityCode) throws BusinessException {
+	public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests)
+			throws BusinessException {
 
 		List<SupplyDto> suppliesDto = new ArrayList<>();
 
-		List<SupplyEntity> suppliesEntity = supplyService.getSuppliesByMunicipalityCode(municipalityCode);
+		List<SupplyEntity> suppliesEntity = new ArrayList<>();
+		Page<SupplyEntity> pageEntity = null;
 
-		if (suppliesEntity.size() > 0) {
+		if (page == null) {
+			suppliesEntity = supplyService.getSuppliesByMunicipalityCode(municipalityCode);
+		} else {
 
-			for (SupplyEntity supplyEntity : suppliesEntity) {
-				SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
-				suppliesDto.add(supplyDto);
+			if (requests != null && requests.size() > 0) {
+				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsPaginated(municipalityCode, requests,
+						page - 1, 20);
+				suppliesEntity = pageEntity.toList();
+			} else {
+				pageEntity = supplyService.getSuppliesByMunicipalityCodePaginated(municipalityCode, page - 1, 20);
+				suppliesEntity = pageEntity.toList();
 			}
+		}
 
+		for (SupplyEntity supplyEntity : suppliesEntity) {
+			SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+			suppliesDto.add(supplyDto);
+		}
+
+		if (page != null) {
+			DataPaginatedDto dataPaginatedDto = new DataPaginatedDto();
+			dataPaginatedDto.setNumber(pageEntity.getNumber());
+			dataPaginatedDto.setItems(suppliesDto);
+			dataPaginatedDto.setNumberOfElements(pageEntity.getNumberOfElements());
+			dataPaginatedDto.setTotalElements(pageEntity.getTotalElements());
+			dataPaginatedDto.setTotalPages(pageEntity.getTotalPages());
+			dataPaginatedDto.setSize(pageEntity.getSize());
+			return dataPaginatedDto;
 		}
 
 		return suppliesDto;
