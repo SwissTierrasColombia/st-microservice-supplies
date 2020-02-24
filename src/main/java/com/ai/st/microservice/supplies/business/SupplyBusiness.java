@@ -164,6 +164,23 @@ public class SupplyBusiness {
 		return supplyDto;
 	}
 
+	public void deleteSupplyById(Long supplyId) throws BusinessException {
+
+		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+		if (!(supplyEntity instanceof SupplyEntity)) {
+			throw new BusinessException("No se ha encontrado el insumo.");
+		}
+
+		try {
+
+			supplyService.deleteSupplyById(supplyId);
+
+		} catch (Exception e) {
+			throw new BusinessException("No se ha podido eliminar el insumo.");
+		}
+
+	}
+
 	protected SupplyDto transformEntityToDto(SupplyEntity supplyEntity) {
 
 		SupplyDto supplyDto = new SupplyDto();

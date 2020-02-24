@@ -49,4 +49,10 @@ public class SupplyService implements ISupplyService {
 		return supplyRepository.findByMunicipalityCodeAndRequestCodeIn(municipalityCode, requests, pageable);
 	}
 
+	@Override
+	@Transactional
+	public void deleteSupplyById(Long id) {
+		supplyRepository.deleteById(id);
+	}
+
 }

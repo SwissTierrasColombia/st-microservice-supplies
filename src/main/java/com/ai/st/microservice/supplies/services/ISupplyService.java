@@ -20,4 +20,6 @@ public interface ISupplyService {
 	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsPaginated(String municipalityCode,
 			List<Long> requests, int page, int numberItems);
 
+	public void deleteSupplyById(Long id);
+
 }

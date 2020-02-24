@@ -108,7 +108,8 @@ public class SupplyV1Controller {
 			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
 	@ResponseBody
 	public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId,
-			@RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "requests", required = false) List<Long> requests) {
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "requests", required = false) List<Long> requests) {
 
 		HttpStatus httpStatus = null;
 		Object responseDto = null;
@@ -150,6 +151,36 @@ public class SupplyV1Controller {
 			responseDto = new ErrorDto(e.getMessage(), 2);
 		} catch (Exception e) {
 			log.error("Error SupplyV1Controller@getSupplyById#General ---> " + e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			responseDto = new ErrorDto(e.getMessage(), 3);
+		}
+
+		return new ResponseEntity<>(responseDto, httpStatus);
+	}
+
+	@RequestMapping(value = "{supplyId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Delete supply by id")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "Supply deleted", response = SupplyDto.class),
+			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
+	@ResponseBody
+	public ResponseEntity<?> deleteSupplyById(@PathVariable Long supplyId) {
+
+		HttpStatus httpStatus = null;
+		Object responseDto = null;
+
+		try {
+
+			supplyBusiness.deleteSupplyById(supplyId);
+
+			responseDto = new ErrorDto("Se ha eliminado el insumo", 7);
+			httpStatus = HttpStatus.NO_CONTENT;
+
+		} catch (BusinessException e) {
+			log.error("Error SupplyV1Controller@deleteSupplyById#Business ---> " + e.getMessage());
+			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+			responseDto = new ErrorDto(e.getMessage(), 2);
+		} catch (Exception e) {
+			log.error("Error SupplyV1Controller@deleteSupplyById#General ---> " + e.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			responseDto = new ErrorDto(e.getMessage(), 3);
 		}
