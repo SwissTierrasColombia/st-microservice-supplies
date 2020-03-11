@@ -78,13 +78,13 @@ $ docker network create st
 ### Create image from Dockerfile
 
 ```sh
-$ docker build -t st-microservice-supplies:ursus .
+$ docker build -t st-microservice-supplies:lynx .
 ```
 
 ### Run Container
 
 ```sh
-$ docker run -P -t --network st -d st-microservice-supplies:ursus
+$ docker run -P -t --network st -d st-microservice-supplies:lynx
 ```
 
 ## License
