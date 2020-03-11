@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.ai.st.microservice.supplies.dto.CreateSupplyOwnerDto;
+import com.ai.st.microservice.supplies.dto.DataPaginatedDto;
 import com.ai.st.microservice.supplies.dto.SupplyAttachmentDto;
 import com.ai.st.microservice.supplies.dto.SupplyDto;
 import com.ai.st.microservice.supplies.dto.SupplyOwnerDto;
@@ -31,8 +33,8 @@ public class SupplyBusiness {
 	private ISupplyService supplyService;
 
 	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
-			String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners)
-			throws BusinessException {
+			Long requestCode, String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners,
+			String modelVersion) throws BusinessException {
 
 		if (urlsDocumentaryRepository.size() == 0 && url.isEmpty()) {
 			throw new BusinessException("El insumo debe contener un archivo o una url.");
@@ -42,7 +44,8 @@ public class SupplyBusiness {
 		for (CreateSupplyOwnerDto owner : owners) {
 
 			// verify type emitter
-			if (!owner.getOwnerType().equals(OwnerTypeEnum.ENTITY.name())
+			if (!owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())
+					&& !owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())
 					&& !owner.getOwnerType().equals(OwnerTypeEnum.USER.name())) {
 				throw new BusinessException("El tipo de propietario es inválido.");
 			}
@@ -69,11 +72,20 @@ public class SupplyBusiness {
 		// owners
 		List<SupplyOwnerEntity> ownersEntity = new ArrayList<SupplyOwnerEntity>();
 		for (CreateSupplyOwnerDto owner : owners) {
+
 			SupplyOwnerEntity ownerEntity = new SupplyOwnerEntity();
 			ownerEntity.setCreatedAt(new Date());
 			ownerEntity.setOwnerCode(owner.getOwnerCode());
-			OwnerTypeEnum ownerType = (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY.name())) ? OwnerTypeEnum.ENTITY
-					: OwnerTypeEnum.USER;
+
+			OwnerTypeEnum ownerType = null;
+			if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())) {
+				ownerType = OwnerTypeEnum.ENTITY_MANAGER;
+			} else if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())) {
+				ownerType = OwnerTypeEnum.ENTITY_PROVIDER;
+			} else {
+				ownerType = OwnerTypeEnum.USER;
+			}
+
 			ownerEntity.setOwnerType(ownerType);
 			ownerEntity.setSupply(supplyEntity);
 			ownersEntity.add(ownerEntity);
@@ -85,9 +97,91 @@ public class SupplyBusiness {
 		supplyEntity.setObservations(observations);
 		supplyEntity.setState(supplyState);
 		supplyEntity.setTypeSupplyCode(typeSupplyCode);
+		supplyEntity.setRequestCode(requestCode);
 		supplyEntity.setUrl(url);
 
+		if (modelVersion != null && !modelVersion.isEmpty()) {
+			supplyEntity.setModelVersion(modelVersion);
+		}
+
 		supplyEntity = supplyService.createSupply(supplyEntity);
+
+		SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+
+		return supplyDto;
+	}
+
+	public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests)
+			throws BusinessException {
+
+		List<SupplyDto> suppliesDto = new ArrayList<>();
+
+		List<SupplyEntity> suppliesEntity = new ArrayList<>();
+		Page<SupplyEntity> pageEntity = null;
+
+		if (page == null) {
+			suppliesEntity = supplyService.getSuppliesByMunicipalityCode(municipalityCode);
+		} else {
+
+			if (requests != null && requests.size() > 0) {
+				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsPaginated(municipalityCode, requests,
+						page - 1, 20);
+				suppliesEntity = pageEntity.toList();
+			} else {
+				pageEntity = supplyService.getSuppliesByMunicipalityCodePaginated(municipalityCode, page - 1, 20);
+				suppliesEntity = pageEntity.toList();
+			}
+		}
+
+		for (SupplyEntity supplyEntity : suppliesEntity) {
+			SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+			suppliesDto.add(supplyDto);
+		}
+
+		if (page != null) {
+			DataPaginatedDto dataPaginatedDto = new DataPaginatedDto();
+			dataPaginatedDto.setNumber(pageEntity.getNumber());
+			dataPaginatedDto.setItems(suppliesDto);
+			dataPaginatedDto.setNumberOfElements(pageEntity.getNumberOfElements());
+			dataPaginatedDto.setTotalElements(pageEntity.getTotalElements());
+			dataPaginatedDto.setTotalPages(pageEntity.getTotalPages());
+			dataPaginatedDto.setSize(pageEntity.getSize());
+			return dataPaginatedDto;
+		}
+
+		return suppliesDto;
+	}
+
+	public SupplyDto getSupplyById(Long supplyId) throws BusinessException {
+
+		SupplyDto supplyDto = null;
+
+		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+		if (supplyEntity instanceof SupplyEntity) {
+			supplyDto = this.transformEntityToDto(supplyEntity);
+		}
+
+		return supplyDto;
+	}
+
+	public void deleteSupplyById(Long supplyId) throws BusinessException {
+
+		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+		if (!(supplyEntity instanceof SupplyEntity)) {
+			throw new BusinessException("No se ha encontrado el insumo.");
+		}
+
+		try {
+
+			supplyService.deleteSupplyById(supplyId);
+
+		} catch (Exception e) {
+			throw new BusinessException("No se ha podido eliminar el insumo.");
+		}
+
+	}
+
+	protected SupplyDto transformEntityToDto(SupplyEntity supplyEntity) {
 
 		SupplyDto supplyDto = new SupplyDto();
 		supplyDto.setId(supplyEntity.getId());
@@ -97,6 +191,8 @@ public class SupplyBusiness {
 		supplyDto.setUrl(supplyEntity.getUrl());
 		supplyDto.setState(new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
 		supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
+		supplyDto.setRequestCode(supplyEntity.getRequestCode());
+		supplyDto.setModelVersion(supplyEntity.getModelVersion());
 
 		List<SupplyOwnerDto> ownersDto = new ArrayList<SupplyOwnerDto>();
 		for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {

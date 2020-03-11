@@ -31,8 +31,14 @@ public class SupplyDto implements Serializable {
 	@ApiModelProperty(required = true, notes = "Observations")
 	private String observations;
 
-	@ApiModelProperty(required = true, notes = "Type supply code")
+	@ApiModelProperty(required = false, notes = "Type supply code")
 	private Long typeSupplyCode;
+
+	@ApiModelProperty(required = false, notes = "Request code")
+	private Long requestCode;
+
+	@ApiModelProperty(required = false, notes = "Model version")
+	private String modelVersion;
 
 	@ApiModelProperty(required = true, notes = "Owners")
 	private List<SupplyOwnerDto> owners;
@@ -115,6 +121,22 @@ public class SupplyDto implements Serializable {
 
 	public void setAttachments(List<SupplyAttachmentDto> attachments) {
 		this.attachments = attachments;
+	}
+
+	public Long getRequestCode() {
+		return requestCode;
+	}
+
+	public void setRequestCode(Long requestCode) {
+		this.requestCode = requestCode;
+	}
+
+	public String getModelVersion() {
+		return modelVersion;
+	}
+
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
 	}
 
 }

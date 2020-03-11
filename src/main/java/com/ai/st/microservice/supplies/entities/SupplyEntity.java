@@ -46,8 +46,14 @@ public class SupplyEntity {
 	@Column(name = "observations", nullable = true, length = 500)
 	private String observations;
 
-	@Column(name = "type_supply_code", nullable = false)
+	@Column(name = "model_version", nullable = true, length = 20)
+	private String modelVersion;
+
+	@Column(name = "type_supply_code", nullable = true)
 	private Long typeSupplyCode;
+
+	@Column(name = "request_code", nullable = true)
+	private Long requestCode;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(schema = "supplies", name = "supplies_x_classes", joinColumns = @JoinColumn(name = "supply_id"), inverseJoinColumns = @JoinColumn(name = "class_id"))
@@ -141,6 +147,22 @@ public class SupplyEntity {
 
 	public void setOwners(List<SupplyOwnerEntity> owners) {
 		this.owners = owners;
+	}
+
+	public Long getRequestCode() {
+		return requestCode;
+	}
+
+	public void setRequestCode(Long requestCode) {
+		this.requestCode = requestCode;
+	}
+
+	public String getModelVersion() {
+		return modelVersion;
+	}
+
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
 	}
 
 }
