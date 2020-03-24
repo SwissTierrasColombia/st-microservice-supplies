@@ -125,10 +125,10 @@ public class SupplyBusiness {
 
 			if (requests != null && requests.size() > 0) {
 				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsPaginated(municipalityCode, requests,
-						page - 1, 20);
+						page - 1, 10);
 				suppliesEntity = pageEntity.toList();
 			} else {
-				pageEntity = supplyService.getSuppliesByMunicipalityCodePaginated(municipalityCode, page - 1, 20);
+				pageEntity = supplyService.getSuppliesByMunicipalityCodePaginated(municipalityCode, page - 1, 10);
 				suppliesEntity = pageEntity.toList();
 			}
 		}
