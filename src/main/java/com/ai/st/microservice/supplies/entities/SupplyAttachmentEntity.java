@@ -27,12 +27,16 @@ public class SupplyAttachmentEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
 
-	@Column(name = "url_documentary_repository", nullable = false, length = 1000)
-	private String urlDocumentaryRepository;
+	@Column(name = "data", nullable = false, length = 2000)
+	private String data;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supply_id", referencedColumnName = "id", nullable = false)
 	private SupplyEntity supply;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "attachment_type_id", referencedColumnName = "id", nullable = false)
+	private SupplyAttachmentTypeEntity attachmentType;
 
 	public SupplyAttachmentEntity() {
 
@@ -54,12 +58,12 @@ public class SupplyAttachmentEntity {
 		this.createdAt = createdAt;
 	}
 
-	public String getUrlDocumentaryRepository() {
-		return urlDocumentaryRepository;
+	public String getData() {
+		return data;
 	}
 
-	public void setUrlDocumentaryRepository(String urlDocumentaryRepository) {
-		this.urlDocumentaryRepository = urlDocumentaryRepository;
+	public void setData(String data) {
+		this.data = data;
 	}
 
 	public SupplyEntity getSupply() {
@@ -68,6 +72,14 @@ public class SupplyAttachmentEntity {
 
 	public void setSupply(SupplyEntity supply) {
 		this.supply = supply;
+	}
+
+	public SupplyAttachmentTypeEntity getAttachmentType() {
+		return attachmentType;
+	}
+
+	public void setAttachmentType(SupplyAttachmentTypeEntity attachmentType) {
+		this.attachmentType = attachmentType;
 	}
 
 }

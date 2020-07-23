@@ -12,9 +12,6 @@ public class CreateSupplyDto implements Serializable {
 
 	private static final long serialVersionUID = 7367459622173301312L;
 
-	@ApiModelProperty(required = false, notes = "Supply URL")
-	private String url;
-
 	@ApiModelProperty(required = true, notes = "Municipality Code (DIVIPOLA)")
 	private String municipalityCode;
 
@@ -33,20 +30,12 @@ public class CreateSupplyDto implements Serializable {
 	@ApiModelProperty(required = true, notes = "Owners")
 	private List<CreateSupplyOwnerDto> owners;
 
-	@ApiModelProperty(required = false, notes = "Urls documentary repository")
-	private List<String> urlsDocumentaryRepository;
+	@ApiModelProperty(required = false, notes = "Attachments")
+	private List<CreateSupplyAttachmentDto> attachments;
 
 	public CreateSupplyDto() {
 		this.owners = new ArrayList<CreateSupplyOwnerDto>();
-		this.urlsDocumentaryRepository = new ArrayList<String>();
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+		this.attachments = new ArrayList<CreateSupplyAttachmentDto>();
 	}
 
 	public String getMunicipalityCode() {
@@ -81,14 +70,6 @@ public class CreateSupplyDto implements Serializable {
 		this.owners = owners;
 	}
 
-	public List<String> getUrlsDocumentaryRepository() {
-		return urlsDocumentaryRepository;
-	}
-
-	public void setUrlsDocumentaryRepository(List<String> urlsDocumentaryRepository) {
-		this.urlsDocumentaryRepository = urlsDocumentaryRepository;
-	}
-
 	public Long getRequestCode() {
 		return requestCode;
 	}
@@ -103,6 +84,14 @@ public class CreateSupplyDto implements Serializable {
 
 	public void setModelVersion(String modelVersion) {
 		this.modelVersion = modelVersion;
+	}
+
+	public List<CreateSupplyAttachmentDto> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<CreateSupplyAttachmentDto> attachments) {
+		this.attachments = attachments;
 	}
 
 }

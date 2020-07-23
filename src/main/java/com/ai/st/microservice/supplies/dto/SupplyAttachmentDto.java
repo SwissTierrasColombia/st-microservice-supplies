@@ -3,8 +3,10 @@ package com.ai.st.microservice.supplies.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel(value = "SupplyAttachmentDto")
 public class SupplyAttachmentDto implements Serializable {
 
 	private static final long serialVersionUID = 7112301654715963689L;
@@ -16,7 +18,10 @@ public class SupplyAttachmentDto implements Serializable {
 	private Date createdAt;
 
 	@ApiModelProperty(required = true, notes = "URL")
-	private String urlDocumentaryRepository;
+	private String data;
+
+	@ApiModelProperty(required = true, notes = "Type")
+	private SupplyAttachmentTypeDto attachmentType;
 
 	public SupplyAttachmentDto() {
 
@@ -38,12 +43,20 @@ public class SupplyAttachmentDto implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	public String getUrlDocumentaryRepository() {
-		return urlDocumentaryRepository;
+	public String getData() {
+		return data;
 	}
 
-	public void setUrlDocumentaryRepository(String urlDocumentaryRepository) {
-		this.urlDocumentaryRepository = urlDocumentaryRepository;
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	public SupplyAttachmentTypeDto getAttachmentType() {
+		return attachmentType;
+	}
+
+	public void setAttachmentType(SupplyAttachmentTypeDto attachmentType) {
+		this.attachmentType = attachmentType;
 	}
 
 }
