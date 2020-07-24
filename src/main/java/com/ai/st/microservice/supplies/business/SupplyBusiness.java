@@ -8,18 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.ai.st.microservice.supplies.dto.CreateSupplyAttachmentDto;
 import com.ai.st.microservice.supplies.dto.CreateSupplyOwnerDto;
 import com.ai.st.microservice.supplies.dto.DataPaginatedDto;
 import com.ai.st.microservice.supplies.dto.SupplyAttachmentDto;
+import com.ai.st.microservice.supplies.dto.SupplyAttachmentTypeDto;
 import com.ai.st.microservice.supplies.dto.SupplyDto;
 import com.ai.st.microservice.supplies.dto.SupplyOwnerDto;
 import com.ai.st.microservice.supplies.dto.SupplyStateDto;
 import com.ai.st.microservice.supplies.entities.OwnerTypeEnum;
 import com.ai.st.microservice.supplies.entities.SupplyAttachmentEntity;
+import com.ai.st.microservice.supplies.entities.SupplyAttachmentTypeEntity;
 import com.ai.st.microservice.supplies.entities.SupplyEntity;
 import com.ai.st.microservice.supplies.entities.SupplyOwnerEntity;
 import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 import com.ai.st.microservice.supplies.exceptions.BusinessException;
+import com.ai.st.microservice.supplies.services.ISupplyAttachmentTypeService;
 import com.ai.st.microservice.supplies.services.ISupplyService;
 import com.ai.st.microservice.supplies.services.ISupplyStateService;
 
@@ -32,12 +36,15 @@ public class SupplyBusiness {
 	@Autowired
 	private ISupplyService supplyService;
 
+	@Autowired
+	private ISupplyAttachmentTypeService attachmentTypeService;
+
 	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
-			Long requestCode, String url, List<String> urlsDocumentaryRepository, List<CreateSupplyOwnerDto> owners,
+			Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
 			String modelVersion) throws BusinessException {
 
-		if (urlsDocumentaryRepository.size() == 0 && url.isEmpty()) {
-			throw new BusinessException("El insumo debe contener un archivo o una url.");
+		if (supplyAttachments.size() == 0) {
+			throw new BusinessException("El insumo debe contener al menos un adjunto.");
 		}
 
 		// owners
@@ -58,14 +65,21 @@ public class SupplyBusiness {
 
 		// attachments
 		List<SupplyAttachmentEntity> attachments = new ArrayList<SupplyAttachmentEntity>();
-		if (urlsDocumentaryRepository.size() > 0) {
-			for (String urlDocumentaryRepository : urlsDocumentaryRepository) {
-				SupplyAttachmentEntity attachementEntity = new SupplyAttachmentEntity();
-				attachementEntity.setCreatedAt(new Date());
-				attachementEntity.setSupply(supplyEntity);
-				attachementEntity.setUrlDocumentaryRepository(urlDocumentaryRepository);
-				attachments.add(attachementEntity);
+		for (CreateSupplyAttachmentDto createAttachmentDto : supplyAttachments) {
+
+			SupplyAttachmentTypeEntity attachmentType = attachmentTypeService
+					.getAttachmentTypeById(createAttachmentDto.getAttachmentTypeId());
+
+			if (attachmentType == null) {
+				throw new BusinessException("El tipo de adjunto no es válido.");
 			}
+
+			SupplyAttachmentEntity attachementEntity = new SupplyAttachmentEntity();
+			attachementEntity.setCreatedAt(new Date());
+			attachementEntity.setSupply(supplyEntity);
+			attachementEntity.setData(createAttachmentDto.getData());
+			attachementEntity.setAttachmentType(attachmentType);
+			attachments.add(attachementEntity);
 		}
 		supplyEntity.setAttachments(attachments);
 
@@ -98,7 +112,6 @@ public class SupplyBusiness {
 		supplyEntity.setState(supplyState);
 		supplyEntity.setTypeSupplyCode(typeSupplyCode);
 		supplyEntity.setRequestCode(requestCode);
-		supplyEntity.setUrl(url);
 
 		if (modelVersion != null && !modelVersion.isEmpty()) {
 			supplyEntity.setModelVersion(modelVersion);
@@ -188,7 +201,6 @@ public class SupplyBusiness {
 		supplyDto.setCreatedAt(supplyEntity.getCreatedAt());
 		supplyDto.setMunicipalityCode(supplyEntity.getMunicipalityCode());
 		supplyDto.setObservations(supplyEntity.getObservations());
-		supplyDto.setUrl(supplyEntity.getUrl());
 		supplyDto.setState(new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
 		supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
 		supplyDto.setRequestCode(supplyEntity.getRequestCode());
@@ -210,7 +222,10 @@ public class SupplyBusiness {
 			SupplyAttachmentDto attachmentDto = new SupplyAttachmentDto();
 			attachmentDto.setCreatedAt(attachmentEntity.getCreatedAt());
 			attachmentDto.setId(attachmentEntity.getId());
-			attachmentDto.setUrlDocumentaryRepository(attachmentEntity.getUrlDocumentaryRepository());
+			attachmentDto.setData(attachmentEntity.getData());
+			SupplyAttachmentTypeEntity attachmentTypeEntity = attachmentEntity.getAttachmentType();
+			attachmentDto.setAttachmentType(
+					new SupplyAttachmentTypeDto(attachmentTypeEntity.getId(), attachmentTypeEntity.getName()));
 			attachmentsDto.add(attachmentDto);
 		}
 		supplyDto.setAttachments(attachmentsDto);

@@ -33,9 +33,6 @@ public class SupplyEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
 
-	@Column(name = "url", nullable = true, length = 1000)
-	private String url;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "state_id", referencedColumnName = "id", nullable = false)
 	private SupplyStateEntity state;
@@ -83,14 +80,6 @@ public class SupplyEntity {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
 	}
 
 	public SupplyStateEntity getState() {

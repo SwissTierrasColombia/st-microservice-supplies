@@ -19,9 +19,6 @@ public class SupplyDto implements Serializable {
 	@ApiModelProperty(required = true, notes = "Date creation")
 	private Date createdAt;
 
-	@ApiModelProperty(required = true, notes = "URL")
-	private String url;
-
 	@ApiModelProperty(required = true, notes = "State")
 	private SupplyStateDto state;
 
@@ -65,14 +62,6 @@ public class SupplyDto implements Serializable {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
 	}
 
 	public SupplyStateDto getState() {

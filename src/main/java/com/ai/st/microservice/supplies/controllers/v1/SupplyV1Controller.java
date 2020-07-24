@@ -80,8 +80,7 @@ public class SupplyV1Controller {
 
 			responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations,
 					requestCreateSAupply.getTypeSupplyCode(), requestCreateSAupply.getRequestCode(),
-					requestCreateSAupply.getUrl(), requestCreateSAupply.getUrlsDocumentaryRepository(), owners,
-					requestCreateSAupply.getModelVersion());
+					requestCreateSAupply.getAttachments(), owners, requestCreateSAupply.getModelVersion());
 			httpStatus = HttpStatus.CREATED;
 
 		} catch (InputValidationException e) {
