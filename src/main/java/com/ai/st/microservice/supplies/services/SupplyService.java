@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ai.st.microservice.supplies.entities.SupplyEntity;
+import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 import com.ai.st.microservice.supplies.repositories.SupplyRepository;
 
 @Service
@@ -26,8 +27,9 @@ public class SupplyService implements ISupplyService {
 	}
 
 	@Override
-	public List<SupplyEntity> getSuppliesByMunicipalityCode(String municipalityCode) {
-		return supplyRepository.findByMunicipalityCode(municipalityCode);
+	public List<SupplyEntity> getSuppliesByMunicipalityCodeAndStates(String municipalityCode,
+			List<SupplyStateEntity> states) {
+		return supplyRepository.findByMunicipalityCodeAndStateIn(municipalityCode, states);
 	}
 
 	@Override
@@ -36,17 +38,18 @@ public class SupplyService implements ISupplyService {
 	}
 
 	@Override
-	public Page<SupplyEntity> getSuppliesByMunicipalityCodePaginated(String municipalityCode, int page,
-			int numberItems) {
+	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode,
+			List<SupplyStateEntity> states, int page, int numberItems) {
 		Pageable pageable = PageRequest.of(page, numberItems);
-		return supplyRepository.findByMunicipalityCode(municipalityCode, pageable);
+		return supplyRepository.findByMunicipalityCodeAndStateIn(municipalityCode, states, pageable);
 	}
 
 	@Override
-	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsPaginated(String municipalityCode,
-			List<Long> requests, int page, int numberItems) {
+	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(String municipalityCode,
+			List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems) {
 		Pageable pageable = PageRequest.of(page, numberItems);
-		return supplyRepository.findByMunicipalityCodeAndRequestCodeIn(municipalityCode, requests, pageable);
+		return supplyRepository.findByMunicipalityCodeAndRequestCodeInAndStateIn(municipalityCode, requests, states,
+				pageable);
 	}
 
 	@Override

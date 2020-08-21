@@ -21,6 +21,7 @@ import com.ai.st.microservice.supplies.dto.CreateSupplyDto;
 import com.ai.st.microservice.supplies.dto.CreateSupplyOwnerDto;
 import com.ai.st.microservice.supplies.dto.ErrorDto;
 import com.ai.st.microservice.supplies.dto.SupplyDto;
+import com.ai.st.microservice.supplies.dto.UpdateSupplyDto;
 import com.ai.st.microservice.supplies.exceptions.BusinessException;
 import com.ai.st.microservice.supplies.exceptions.InputValidationException;
 
@@ -108,13 +109,14 @@ public class SupplyV1Controller {
 	@ResponseBody
 	public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId,
 			@RequestParam(name = "page", required = false) Integer page,
-			@RequestParam(name = "requests", required = false) List<Long> requests) {
+			@RequestParam(name = "requests", required = false) List<Long> requests,
+			@RequestParam(name = "states", required = false) List<Long> states) {
 
 		HttpStatus httpStatus = null;
 		Object responseDto = null;
 
 		try {
-			responseDto = supplyBusiness.getSuppliesByMunicipality(municipalityId, page, requests);
+			responseDto = supplyBusiness.getSuppliesByMunicipality(municipalityId, page, requests, states);
 			httpStatus = HttpStatus.OK;
 		} catch (BusinessException e) {
 			log.error("Error SupplyV1Controller@getSuppliesByMunicipality#Business ---> " + e.getMessage());
@@ -180,6 +182,34 @@ public class SupplyV1Controller {
 			responseDto = new ErrorDto(e.getMessage(), 2);
 		} catch (Exception e) {
 			log.error("Error SupplyV1Controller@deleteSupplyById#General ---> " + e.getMessage());
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			responseDto = new ErrorDto(e.getMessage(), 3);
+		}
+
+		return new ResponseEntity<>(responseDto, httpStatus);
+	}
+
+	@RequestMapping(value = "{supplyId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Update supply by id")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "Supply upated", response = SupplyDto.class),
+			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
+	@ResponseBody
+	public ResponseEntity<?> updateSupply(@PathVariable Long supplyId, @RequestBody UpdateSupplyDto updateSupplyDto) {
+
+		HttpStatus httpStatus = null;
+		Object responseDto = null;
+
+		try {
+
+			responseDto = supplyBusiness.updateSupply(supplyId, updateSupplyDto.getStateId());
+			httpStatus = HttpStatus.OK;
+
+		} catch (BusinessException e) {
+			log.error("Error SupplyV1Controller@updateSupply#Business ---> " + e.getMessage());
+			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+			responseDto = new ErrorDto(e.getMessage(), 2);
+		} catch (Exception e) {
+			log.error("Error SupplyV1Controller@updateSupply#General ---> " + e.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			responseDto = new ErrorDto(e.getMessage(), 3);
 		}

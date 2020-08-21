@@ -5,20 +5,22 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.ai.st.microservice.supplies.entities.SupplyEntity;
+import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 
 public interface ISupplyService {
 
 	public SupplyEntity createSupply(SupplyEntity supplyEntity);
 
-	public List<SupplyEntity> getSuppliesByMunicipalityCode(String municipalityCode);
+	public List<SupplyEntity> getSuppliesByMunicipalityCodeAndStates(String municipalityCode,
+			List<SupplyStateEntity> states);
 
 	public SupplyEntity getSupplyById(Long id);
 
-	public Page<SupplyEntity> getSuppliesByMunicipalityCodePaginated(String municipalityCode, int page,
-			int numberItems);
+	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode,
+			List<SupplyStateEntity> states, int page, int numberItems);
 
-	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsPaginated(String municipalityCode,
-			List<Long> requests, int page, int numberItems);
+	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(String municipalityCode,
+			List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems);
 
 	public void deleteSupplyById(Long id);
 

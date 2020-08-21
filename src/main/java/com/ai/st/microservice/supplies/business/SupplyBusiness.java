@@ -124,24 +124,49 @@ public class SupplyBusiness {
 		return supplyDto;
 	}
 
-	public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests)
-			throws BusinessException {
+	public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests,
+			List<Long> states) throws BusinessException {
 
 		List<SupplyDto> suppliesDto = new ArrayList<>();
 
 		List<SupplyEntity> suppliesEntity = new ArrayList<>();
 		Page<SupplyEntity> pageEntity = null;
 
+		List<SupplyStateEntity> statesEntity = new ArrayList<SupplyStateEntity>();
+
+		if (states == null) {
+
+			SupplyStateEntity stateActive = supplyStateService
+					.getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_ACTIVE);
+			SupplyStateEntity stateInactive = supplyStateService
+					.getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_INACTIVE);
+			SupplyStateEntity stateRemoved = supplyStateService
+					.getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_REMOVED);
+
+			statesEntity.add(stateActive);
+			statesEntity.add(stateInactive);
+			statesEntity.add(stateRemoved);
+
+		} else {
+			for (Long stateId : states) {
+				SupplyStateEntity stateEntity = supplyStateService.getSupplyStateById(stateId);
+				if (stateEntity != null) {
+					statesEntity.add(stateEntity);
+				}
+			}
+		}
+
 		if (page == null) {
-			suppliesEntity = supplyService.getSuppliesByMunicipalityCode(municipalityCode);
+			suppliesEntity = supplyService.getSuppliesByMunicipalityCodeAndStates(municipalityCode, statesEntity);
 		} else {
 
 			if (requests != null && requests.size() > 0) {
-				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsPaginated(municipalityCode, requests,
-						page - 1, 10);
+				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(municipalityCode,
+						requests, statesEntity, page - 1, 10);
 				suppliesEntity = pageEntity.toList();
 			} else {
-				pageEntity = supplyService.getSuppliesByMunicipalityCodePaginated(municipalityCode, page - 1, 10);
+				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndStatesPaginated(municipalityCode,
+						statesEntity, page - 1, 10);
 				suppliesEntity = pageEntity.toList();
 			}
 		}
@@ -192,6 +217,28 @@ public class SupplyBusiness {
 			throw new BusinessException("No se ha podido eliminar el insumo.");
 		}
 
+	}
+
+	public SupplyDto updateSupply(Long supplyId, Long stateId) throws BusinessException {
+
+		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+		if (!(supplyEntity instanceof SupplyEntity)) {
+			throw new BusinessException("No se ha encontrado el insumo.");
+		}
+
+		if (stateId != null) {
+			SupplyStateEntity stateEntity = supplyStateService.getSupplyStateById(stateId);
+			if (stateEntity == null) {
+				throw new BusinessException("El estado del insumo no existe.");
+			}
+			supplyEntity.setState(stateEntity);
+		}
+
+		supplyEntity = supplyService.createSupply(supplyEntity);
+
+		SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+
+		return supplyDto;
 	}
 
 	protected SupplyDto transformEntityToDto(SupplyEntity supplyEntity) {

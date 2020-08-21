@@ -7,14 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.ai.st.microservice.supplies.entities.SupplyEntity;
+import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 
 public interface SupplyRepository extends PagingAndSortingRepository<SupplyEntity, Long> {
 
-	List<SupplyEntity> findByMunicipalityCode(String municipalityCode);
+	List<SupplyEntity> findByMunicipalityCodeAndStateIn(String municipalityCode, List<SupplyStateEntity> states);
 
-	Page<SupplyEntity> findByMunicipalityCode(String municipalityCode, Pageable pageable);
+	Page<SupplyEntity> findByMunicipalityCodeAndStateIn(String municipalityCode, List<SupplyStateEntity> states, Pageable pageable);
 
-	Page<SupplyEntity> findByMunicipalityCodeAndRequestCodeIn(String municipalityCode, List<Long> requests,
+	Page<SupplyEntity> findByMunicipalityCodeAndRequestCodeInAndStateIn(String municipalityCode, List<Long> requests, List<SupplyStateEntity> states,
 			Pageable pageable);
 
 }
