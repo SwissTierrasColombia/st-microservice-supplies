@@ -12,8 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -51,10 +49,6 @@ public class SupplyEntity {
 
 	@Column(name = "request_code", nullable = true)
 	private Long requestCode;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(schema = "supplies", name = "supplies_x_classes", joinColumns = @JoinColumn(name = "supply_id"), inverseJoinColumns = @JoinColumn(name = "class_id"))
-	List<SupplyClassEntity> classes;
 
 	@OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
 	private List<SupplyAttachmentEntity> attachments = new ArrayList<SupplyAttachmentEntity>();
@@ -112,14 +106,6 @@ public class SupplyEntity {
 
 	public void setTypeSupplyCode(Long typeSupplyCode) {
 		this.typeSupplyCode = typeSupplyCode;
-	}
-
-	public List<SupplyClassEntity> getClasses() {
-		return classes;
-	}
-
-	public void setClasses(List<SupplyClassEntity> classes) {
-		this.classes = classes;
 	}
 
 	public List<SupplyAttachmentEntity> getAttachments() {

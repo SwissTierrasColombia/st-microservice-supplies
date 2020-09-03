@@ -53,7 +53,8 @@ public class SupplyBusiness {
 			// verify type emitter
 			if (!owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())
 					&& !owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())
-					&& !owner.getOwnerType().equals(OwnerTypeEnum.USER.name())) {
+					&& !owner.getOwnerType().equals(OwnerTypeEnum.USER.name())
+					&& !owner.getOwnerType().equals(OwnerTypeEnum.CADASTRAL_AUTHORITY.name())) {
 				throw new BusinessException("El tipo de propietario es inválido.");
 			}
 
@@ -96,6 +97,8 @@ public class SupplyBusiness {
 				ownerType = OwnerTypeEnum.ENTITY_MANAGER;
 			} else if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())) {
 				ownerType = OwnerTypeEnum.ENTITY_PROVIDER;
+			} else if (owner.getOwnerType().equals(OwnerTypeEnum.CADASTRAL_AUTHORITY.name())) {
+				ownerType = OwnerTypeEnum.CADASTRAL_AUTHORITY;
 			} else {
 				ownerType = OwnerTypeEnum.USER;
 			}
@@ -113,7 +116,9 @@ public class SupplyBusiness {
 		supplyEntity.setTypeSupplyCode(typeSupplyCode);
 		supplyEntity.setRequestCode(requestCode);
 
-		if (modelVersion != null && !modelVersion.isEmpty()) {
+		if (modelVersion != null && !modelVersion.isEmpty())
+
+		{
 			supplyEntity.setModelVersion(modelVersion);
 		}
 

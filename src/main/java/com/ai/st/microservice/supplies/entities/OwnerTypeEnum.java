@@ -6,5 +6,7 @@ public enum OwnerTypeEnum {
 
 	ENTITY_MANAGER,
 
-	USER
+	USER,
+
+	CADASTRAL_AUTHORITY
 }
