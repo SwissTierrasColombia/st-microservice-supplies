@@ -1,5 +1,7 @@
 package com.ai.st.microservice.supplies.services;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,11 @@ public class SupplyAttachmentTypeService implements ISupplyAttachmentTypeService
 	@Override
 	public Long getCount() {
 		return attachmentTypeRepository.count();
+	}
+
+	@Override
+	public List<SupplyAttachmentTypeEntity> getSupplyAttachmentsTypes() {
+		return attachmentTypeRepository.findAll();
 	}
 
 }
