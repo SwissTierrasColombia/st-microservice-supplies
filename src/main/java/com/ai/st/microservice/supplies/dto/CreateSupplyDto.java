@@ -7,7 +7,7 @@ import java.util.List;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value = "CreateSupplyDto", description = "Create Supply Dto")
+@ApiModel(value = "CreateSupplyDto")
 public class CreateSupplyDto implements Serializable {
 
 	private static final long serialVersionUID = 7367459622173301312L;
@@ -26,6 +26,9 @@ public class CreateSupplyDto implements Serializable {
 
 	@ApiModelProperty(required = false, notes = "Model version")
 	private String modelVersion;
+
+	@ApiModelProperty(required = false, notes = "State ID")
+	private Long supplyStateId;
 
 	@ApiModelProperty(required = true, notes = "Owners")
 	private List<CreateSupplyOwnerDto> owners;
@@ -92,6 +95,14 @@ public class CreateSupplyDto implements Serializable {
 
 	public void setAttachments(List<CreateSupplyAttachmentDto> attachments) {
 		this.attachments = attachments;
+	}
+
+	public Long getSupplyStateId() {
+		return supplyStateId;
+	}
+
+	public void setSupplyStateId(Long supplyStateId) {
+		this.supplyStateId = supplyStateId;
 	}
 
 }

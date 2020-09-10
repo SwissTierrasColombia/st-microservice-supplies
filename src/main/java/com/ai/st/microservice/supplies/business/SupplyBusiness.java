@@ -41,7 +41,7 @@ public class SupplyBusiness {
 
 	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
 			Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
-			String modelVersion) throws BusinessException {
+			String modelVersion, Long supplyStateId) throws BusinessException {
 
 		if (supplyAttachments.size() == 0) {
 			throw new BusinessException("El insumo debe contener al menos un adjunto.");
@@ -59,8 +59,15 @@ public class SupplyBusiness {
 			}
 
 		}
+		
+		if (supplyStateId == null) {
+			supplyStateId = SupplyStateBusiness.SUPPLY_STATE_ACTIVE;
+		}
 
-		SupplyStateEntity supplyState = supplyStateService.getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_ACTIVE);
+		SupplyStateEntity supplyState = supplyStateService.getSupplyStateById(supplyStateId);
+		if (supplyState == null) {
+			throw new BusinessException("El estado del insumo no existe");
+		}
 
 		SupplyEntity supplyEntity = new SupplyEntity();
 
