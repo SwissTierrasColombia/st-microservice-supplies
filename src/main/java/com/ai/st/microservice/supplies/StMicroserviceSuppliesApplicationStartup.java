@@ -80,7 +80,7 @@ public class StMicroserviceSuppliesApplicationStartup implements ApplicationList
 
 				SupplyAttachmentTypeEntity typeExternal = new SupplyAttachmentTypeEntity();
 				typeExternal.setId(SupplyAttachmentTypeBusiness.SUPPLY_ATTACHMENT_TYPE_EXTERNAL_SOURCE);
-				typeExternal.setName("FUENTE EXTERNA");
+				typeExternal.setName("ENTREGA FÍSICA");
 				attachmentTypeService.createAttachmentType(typeExternal);
 
 				log.info("The domains 'attachments types' have been loaded!");
