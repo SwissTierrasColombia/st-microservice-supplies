@@ -70,7 +70,7 @@ public class StMicroserviceSuppliesApplicationStartup implements ApplicationList
 
 				SupplyAttachmentTypeEntity typeSupply = new SupplyAttachmentTypeEntity();
 				typeSupply.setId(SupplyAttachmentTypeBusiness.SUPPLY_ATTACHMENT_TYPE_SUPPLY);
-				typeSupply.setName("INSUMO");
+				typeSupply.setName("ARCHIVO");
 				attachmentTypeService.createAttachmentType(typeSupply);
 
 				SupplyAttachmentTypeEntity typeFTP = new SupplyAttachmentTypeEntity();
