@@ -24,6 +24,9 @@ public class SupplyDto implements Serializable {
 
 	@ApiModelProperty(required = true, notes = "Municipality Code")
 	private String municipalityCode;
+	
+	@ApiModelProperty(required = true, notes = "Name")
+	private String name;
 
 	@ApiModelProperty(required = true, notes = "Observations")
 	private String observations;
@@ -126,6 +129,14 @@ public class SupplyDto implements Serializable {
 
 	public void setModelVersion(String modelVersion) {
 		this.modelVersion = modelVersion;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

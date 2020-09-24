@@ -38,6 +38,9 @@ public class SupplyEntity {
 	@Column(name = "municipality_code", nullable = false, length = 10)
 	private String municipalityCode;
 
+	@Column(name = "name", nullable = true, length = 500)
+	private String name;
+
 	@Column(name = "observations", nullable = true, length = 500)
 	private String observations;
 
@@ -138,6 +141,14 @@ public class SupplyEntity {
 
 	public void setModelVersion(String modelVersion) {
 		this.modelVersion = modelVersion;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

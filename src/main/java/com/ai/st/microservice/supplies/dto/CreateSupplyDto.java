@@ -15,6 +15,9 @@ public class CreateSupplyDto implements Serializable {
 	@ApiModelProperty(required = true, notes = "Municipality Code (DIVIPOLA)")
 	private String municipalityCode;
 
+	@ApiModelProperty(required = true, notes = "Name")
+	private String name;
+
 	@ApiModelProperty(required = true, notes = "Observations")
 	private String observations;
 
@@ -103,6 +106,14 @@ public class CreateSupplyDto implements Serializable {
 
 	public void setSupplyStateId(Long supplyStateId) {
 		this.supplyStateId = supplyStateId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

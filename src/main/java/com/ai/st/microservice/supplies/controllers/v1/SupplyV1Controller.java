@@ -45,7 +45,7 @@ public class SupplyV1Controller {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Create supply", response = SupplyDto.class),
 			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
 	@ResponseBody
-	public ResponseEntity<Object> createSupply(@RequestBody CreateSupplyDto requestCreateSAupply) {
+	public ResponseEntity<Object> createSupply(@RequestBody CreateSupplyDto requestCreateSupply) {
 
 		HttpStatus httpStatus = null;
 		Object responseDto = null;
@@ -53,19 +53,19 @@ public class SupplyV1Controller {
 		try {
 
 			// validation municipality code
-			String municipalityCode = requestCreateSAupply.getMunicipalityCode();
+			String municipalityCode = requestCreateSupply.getMunicipalityCode();
 			if (municipalityCode.isEmpty()) {
 				throw new InputValidationException("El código del municipio es requerido");
 			}
 
 			// validation observations
-			String observations = requestCreateSAupply.getObservations();
+			String observations = requestCreateSupply.getObservations();
 			if (observations.isEmpty()) {
 				throw new InputValidationException("Las observaciones son requeridas.");
 			}
 
 			// validation owners
-			List<CreateSupplyOwnerDto> owners = requestCreateSAupply.getOwners();
+			List<CreateSupplyOwnerDto> owners = requestCreateSupply.getOwners();
 			if (owners.size() > 0) {
 				for (CreateSupplyOwnerDto owner : owners) {
 					if (owner.getOwnerCode() == null || owner.getOwnerCode() <= 0) {
@@ -80,8 +80,9 @@ public class SupplyV1Controller {
 			}
 
 			responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations,
-					requestCreateSAupply.getTypeSupplyCode(), requestCreateSAupply.getRequestCode(),
-					requestCreateSAupply.getAttachments(), owners, requestCreateSAupply.getModelVersion(), requestCreateSAupply.getSupplyStateId());
+					requestCreateSupply.getTypeSupplyCode(), requestCreateSupply.getRequestCode(),
+					requestCreateSupply.getAttachments(), owners, requestCreateSupply.getModelVersion(),
+					requestCreateSupply.getSupplyStateId(), requestCreateSupply.getName());
 			httpStatus = HttpStatus.CREATED;
 
 		} catch (InputValidationException e) {

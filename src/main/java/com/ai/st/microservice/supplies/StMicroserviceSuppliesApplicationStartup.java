@@ -70,7 +70,7 @@ public class StMicroserviceSuppliesApplicationStartup implements ApplicationList
 
 				SupplyAttachmentTypeEntity typeSupply = new SupplyAttachmentTypeEntity();
 				typeSupply.setId(SupplyAttachmentTypeBusiness.SUPPLY_ATTACHMENT_TYPE_SUPPLY);
-				typeSupply.setName("INSUMO");
+				typeSupply.setName("ARCHIVO");
 				attachmentTypeService.createAttachmentType(typeSupply);
 
 				SupplyAttachmentTypeEntity typeFTP = new SupplyAttachmentTypeEntity();
@@ -80,7 +80,7 @@ public class StMicroserviceSuppliesApplicationStartup implements ApplicationList
 
 				SupplyAttachmentTypeEntity typeExternal = new SupplyAttachmentTypeEntity();
 				typeExternal.setId(SupplyAttachmentTypeBusiness.SUPPLY_ATTACHMENT_TYPE_EXTERNAL_SOURCE);
-				typeExternal.setName("FUENTE EXTERNA");
+				typeExternal.setName("ENTREGA FÍSICA");
 				attachmentTypeService.createAttachmentType(typeExternal);
 
 				log.info("The domains 'attachments types' have been loaded!");

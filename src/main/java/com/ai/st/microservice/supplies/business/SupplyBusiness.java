@@ -41,7 +41,7 @@ public class SupplyBusiness {
 
 	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
 			Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
-			String modelVersion, Long supplyStateId) throws BusinessException {
+			String modelVersion, Long supplyStateId, String name) throws BusinessException {
 
 		if (supplyAttachments.size() == 0) {
 			throw new BusinessException("El insumo debe contener al menos un adjunto.");
@@ -115,6 +115,10 @@ public class SupplyBusiness {
 			ownersEntity.add(ownerEntity);
 		}
 		supplyEntity.setOwners(ownersEntity);
+		
+		if (name != null) {
+			supplyEntity.setName(name);
+		}
 
 		supplyEntity.setCreatedAt(new Date());
 		supplyEntity.setMunicipalityCode(municipalityCode);
@@ -257,6 +261,7 @@ public class SupplyBusiness {
 
 		SupplyDto supplyDto = new SupplyDto();
 		supplyDto.setId(supplyEntity.getId());
+		supplyDto.setName(supplyEntity.getName());
 		supplyDto.setCreatedAt(supplyEntity.getCreatedAt());
 		supplyDto.setMunicipalityCode(supplyEntity.getMunicipalityCode());
 		supplyDto.setObservations(supplyEntity.getObservations());
