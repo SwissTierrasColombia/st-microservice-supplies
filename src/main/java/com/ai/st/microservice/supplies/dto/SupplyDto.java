@@ -11,132 +11,142 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "SupplyDto", description = "Supply Dto")
 public class SupplyDto implements Serializable {
 
-	private static final long serialVersionUID = 8259586718340595896L;
+    private static final long serialVersionUID = 8259586718340595896L;
 
-	@ApiModelProperty(required = true, notes = "Supply ID")
-	private Long id;
+    @ApiModelProperty(required = true, notes = "Supply ID")
+    private Long id;
 
-	@ApiModelProperty(required = true, notes = "Date creation")
-	private Date createdAt;
+    @ApiModelProperty(required = true, notes = "Date creation")
+    private Date createdAt;
 
-	@ApiModelProperty(required = true, notes = "State")
-	private SupplyStateDto state;
+    @ApiModelProperty(required = true, notes = "State")
+    private SupplyStateDto state;
 
-	@ApiModelProperty(required = true, notes = "Municipality Code")
-	private String municipalityCode;
-	
-	@ApiModelProperty(required = true, notes = "Name")
-	private String name;
+    @ApiModelProperty(required = true, notes = "Municipality Code")
+    private String municipalityCode;
 
-	@ApiModelProperty(required = true, notes = "Observations")
-	private String observations;
+    @ApiModelProperty(required = true, notes = "Name")
+    private String name;
 
-	@ApiModelProperty(required = false, notes = "Type supply code")
-	private Long typeSupplyCode;
+    @ApiModelProperty(required = true, notes = "Observations")
+    private String observations;
 
-	@ApiModelProperty(required = false, notes = "Request code")
-	private Long requestCode;
+    @ApiModelProperty(required = false, notes = "Type supply code")
+    private Long typeSupplyCode;
 
-	@ApiModelProperty(required = false, notes = "Model version")
-	private String modelVersion;
+    @ApiModelProperty(required = false, notes = "Request code")
+    private Long requestCode;
 
-	@ApiModelProperty(required = true, notes = "Owners")
-	private List<SupplyOwnerDto> owners;
+    @ApiModelProperty(required = true, notes = "Manager code")
+    private Long managerCode;
 
-	@ApiModelProperty(required = true, notes = "Attachments")
-	private List<SupplyAttachmentDto> attachments;
+    @ApiModelProperty(required = false, notes = "Model version")
+    private String modelVersion;
 
-	public SupplyDto() {
-		this.owners = new ArrayList<SupplyOwnerDto>();
-		this.attachments = new ArrayList<SupplyAttachmentDto>();
-	}
+    @ApiModelProperty(required = true, notes = "Owners")
+    private List<SupplyOwnerDto> owners;
 
-	public Long getId() {
-		return id;
-	}
+    @ApiModelProperty(required = true, notes = "Attachments")
+    private List<SupplyAttachmentDto> attachments;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public SupplyDto() {
+        this.owners = new ArrayList<SupplyOwnerDto>();
+        this.attachments = new ArrayList<SupplyAttachmentDto>();
+    }
 
-	public Date getCreatedAt() {
-		return createdAt;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public SupplyStateDto getState() {
-		return state;
-	}
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-	public void setState(SupplyStateDto state) {
-		this.state = state;
-	}
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public String getMunicipalityCode() {
-		return municipalityCode;
-	}
+    public SupplyStateDto getState() {
+        return state;
+    }
 
-	public void setMunicipalityCode(String municipalityCode) {
-		this.municipalityCode = municipalityCode;
-	}
+    public void setState(SupplyStateDto state) {
+        this.state = state;
+    }
 
-	public String getObservations() {
-		return observations;
-	}
+    public String getMunicipalityCode() {
+        return municipalityCode;
+    }
 
-	public void setObservations(String observations) {
-		this.observations = observations;
-	}
+    public void setMunicipalityCode(String municipalityCode) {
+        this.municipalityCode = municipalityCode;
+    }
 
-	public Long getTypeSupplyCode() {
-		return typeSupplyCode;
-	}
+    public String getObservations() {
+        return observations;
+    }
 
-	public void setTypeSupplyCode(Long typeSupplyCode) {
-		this.typeSupplyCode = typeSupplyCode;
-	}
+    public void setObservations(String observations) {
+        this.observations = observations;
+    }
 
-	public List<SupplyOwnerDto> getOwners() {
-		return owners;
-	}
+    public Long getTypeSupplyCode() {
+        return typeSupplyCode;
+    }
 
-	public void setOwners(List<SupplyOwnerDto> owners) {
-		this.owners = owners;
-	}
+    public void setTypeSupplyCode(Long typeSupplyCode) {
+        this.typeSupplyCode = typeSupplyCode;
+    }
 
-	public List<SupplyAttachmentDto> getAttachments() {
-		return attachments;
-	}
+    public List<SupplyOwnerDto> getOwners() {
+        return owners;
+    }
 
-	public void setAttachments(List<SupplyAttachmentDto> attachments) {
-		this.attachments = attachments;
-	}
+    public void setOwners(List<SupplyOwnerDto> owners) {
+        this.owners = owners;
+    }
 
-	public Long getRequestCode() {
-		return requestCode;
-	}
+    public List<SupplyAttachmentDto> getAttachments() {
+        return attachments;
+    }
 
-	public void setRequestCode(Long requestCode) {
-		this.requestCode = requestCode;
-	}
+    public void setAttachments(List<SupplyAttachmentDto> attachments) {
+        this.attachments = attachments;
+    }
 
-	public String getModelVersion() {
-		return modelVersion;
-	}
+    public Long getRequestCode() {
+        return requestCode;
+    }
 
-	public void setModelVersion(String modelVersion) {
-		this.modelVersion = modelVersion;
-	}
+    public void setRequestCode(Long requestCode) {
+        this.requestCode = requestCode;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getModelVersion() {
+        return modelVersion;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setModelVersion(String modelVersion) {
+        this.modelVersion = modelVersion;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getManagerCode() {
+        return managerCode;
+    }
+
+    public void setManagerCode(Long managerCode) {
+        this.managerCode = managerCode;
+    }
 }

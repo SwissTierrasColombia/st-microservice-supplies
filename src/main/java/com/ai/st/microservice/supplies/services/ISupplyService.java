@@ -9,19 +9,21 @@ import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 
 public interface ISupplyService {
 
-	public SupplyEntity createSupply(SupplyEntity supplyEntity);
+    SupplyEntity createSupply(SupplyEntity supplyEntity);
 
-	public List<SupplyEntity> getSuppliesByMunicipalityCodeAndStates(String municipalityCode,
-			List<SupplyStateEntity> states);
+    List<SupplyEntity> getSuppliesByMunicipalityCodeAndStates(String municipalityCode, List<SupplyStateEntity> states);
 
-	public SupplyEntity getSupplyById(Long id);
+    SupplyEntity getSupplyById(Long id);
 
-	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode,
-			List<SupplyStateEntity> states, int page, int numberItems);
+    Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode,
+                                                                       Long managerCode,
+                                                                       List<SupplyStateEntity> states, int page, int numberItems);
 
-	public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(String municipalityCode,
-			List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems);
+    Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(String municipalityCode,
+                                                                                  List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems);
 
-	public void deleteSupplyById(Long id);
+    void deleteSupplyById(Long id);
+
+    List<SupplyEntity> getSuppliesXTFByManager(Long managerCode, String municipalityCode);
 
 }
