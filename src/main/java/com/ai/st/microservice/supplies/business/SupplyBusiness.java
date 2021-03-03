@@ -92,14 +92,14 @@ public class SupplyBusiness {
         supplyEntity.setAttachments(attachments);
 
         // owners
-        List<SupplyOwnerEntity> ownersEntity = new ArrayList<SupplyOwnerEntity>();
+        List<SupplyOwnerEntity> ownersEntity = new ArrayList<>();
         for (CreateSupplyOwnerDto owner : owners) {
 
             SupplyOwnerEntity ownerEntity = new SupplyOwnerEntity();
             ownerEntity.setCreatedAt(new Date());
             ownerEntity.setOwnerCode(owner.getOwnerCode());
 
-            OwnerTypeEnum ownerType = null;
+            OwnerTypeEnum ownerType;
             if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())) {
                 ownerType = OwnerTypeEnum.ENTITY_MANAGER;
             } else if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())) {
@@ -134,9 +134,7 @@ public class SupplyBusiness {
 
         supplyEntity = supplyService.createSupply(supplyEntity);
 
-        SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
-
-        return supplyDto;
+        return this.transformEntityToDto(supplyEntity);
     }
 
     public List<SupplyDto> getSuppliesXTFByMunicipality(String municipalityCode, Long managerCode) {
@@ -157,7 +155,7 @@ public class SupplyBusiness {
 
         List<SupplyDto> suppliesDto = new ArrayList<>();
 
-        List<SupplyEntity> suppliesEntity = new ArrayList<>();
+        List<SupplyEntity> suppliesEntity;
         Page<SupplyEntity> pageEntity = null;
 
         List<SupplyStateEntity> statesEntity = new ArrayList<>();
@@ -222,7 +220,7 @@ public class SupplyBusiness {
         SupplyDto supplyDto = null;
 
         SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
-        if (supplyEntity instanceof SupplyEntity) {
+        if (supplyEntity != null) {
             supplyDto = this.transformEntityToDto(supplyEntity);
         }
 
@@ -232,7 +230,7 @@ public class SupplyBusiness {
     public void deleteSupplyById(Long supplyId) throws BusinessException {
 
         SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
-        if (!(supplyEntity instanceof SupplyEntity)) {
+        if (supplyEntity == null) {
             throw new BusinessException("No se ha encontrado el insumo.");
         }
 
@@ -249,7 +247,7 @@ public class SupplyBusiness {
     public SupplyDto updateSupply(Long supplyId, Long stateId) throws BusinessException {
 
         SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
-        if (!(supplyEntity instanceof SupplyEntity)) {
+        if (supplyEntity == null) {
             throw new BusinessException("No se ha encontrado el insumo.");
         }
 
@@ -263,9 +261,7 @@ public class SupplyBusiness {
 
         supplyEntity = supplyService.createSupply(supplyEntity);
 
-        SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
-
-        return supplyDto;
+        return this.transformEntityToDto(supplyEntity);
     }
 
     protected SupplyDto transformEntityToDto(SupplyEntity supplyEntity) {
@@ -293,7 +289,7 @@ public class SupplyBusiness {
         }
         supplyDto.setOwners(ownersDto);
 
-        List<SupplyAttachmentDto> attachmentsDto = new ArrayList<SupplyAttachmentDto>();
+        List<SupplyAttachmentDto> attachmentsDto = new ArrayList<>();
         for (SupplyAttachmentEntity attachmentEntity : supplyEntity.getAttachments()) {
             SupplyAttachmentDto attachmentDto = new SupplyAttachmentDto();
             attachmentDto.setCreatedAt(attachmentEntity.getCreatedAt());

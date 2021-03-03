@@ -146,8 +146,8 @@ public class SupplyV1Controller {
     @ResponseBody
     public ResponseEntity<?> getSupplyById(@PathVariable Long supplyId) {
 
-        HttpStatus httpStatus = null;
-        Object responseDto = null;
+        HttpStatus httpStatus;
+        Object responseDto;
 
         try {
 

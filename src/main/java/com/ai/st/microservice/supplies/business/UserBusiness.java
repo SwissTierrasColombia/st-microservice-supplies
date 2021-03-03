@@ -42,7 +42,7 @@ public class UserBusiness {
         MicroserviceRoleDto roleManager = userDto.getRoles().stream()
                 .filter(roleDto -> roleDto.getId().equals(RoleBusiness.ROLE_MANAGER)).findAny().orElse(null);
 
-        return (roleManager != null) ? true : false;
+        return roleManager != null;
     }
 
     public boolean isAdministrator(MicroserviceUserDto userDto) {
@@ -50,7 +50,7 @@ public class UserBusiness {
         MicroserviceRoleDto roleAdministrator = userDto.getRoles().stream()
                 .filter(roleDto -> roleDto.getId().equals(RoleBusiness.ROLE_ADMINISTRATOR)).findAny().orElse(null);
 
-        return (roleAdministrator != null) ? true : false;
+        return roleAdministrator != null;
     }
 
 }
