@@ -31,16 +31,16 @@ public class SupplyDto implements Serializable {
     @ApiModelProperty(required = true, notes = "Observations")
     private String observations;
 
-    @ApiModelProperty(required = false, notes = "Type supply code")
+    @ApiModelProperty(notes = "Type supply code")
     private Long typeSupplyCode;
 
-    @ApiModelProperty(required = false, notes = "Request code")
+    @ApiModelProperty(notes = "Request code")
     private Long requestCode;
 
     @ApiModelProperty(required = true, notes = "Manager code")
     private Long managerCode;
 
-    @ApiModelProperty(required = false, notes = "Model version")
+    @ApiModelProperty(notes = "Model version")
     private String modelVersion;
 
     @ApiModelProperty(required = true, notes = "Owners")
@@ -49,9 +49,12 @@ public class SupplyDto implements Serializable {
     @ApiModelProperty(required = true, notes = "Attachments")
     private List<SupplyAttachmentDto> attachments;
 
+    @ApiModelProperty(notes = "Has Geometry Validation?")
+    private Boolean hasGeometryValidation;
+
     public SupplyDto() {
-        this.owners = new ArrayList<SupplyOwnerDto>();
-        this.attachments = new ArrayList<SupplyAttachmentDto>();
+        this.owners = new ArrayList<>();
+        this.attachments = new ArrayList<>();
     }
 
     public Long getId() {
@@ -148,5 +151,13 @@ public class SupplyDto implements Serializable {
 
     public void setManagerCode(Long managerCode) {
         this.managerCode = managerCode;
+    }
+
+    public Boolean getHasGeometryValidation() {
+        return hasGeometryValidation;
+    }
+
+    public void setHasGeometryValidation(Boolean hasGeometryValidation) {
+        this.hasGeometryValidation = hasGeometryValidation;
     }
 }

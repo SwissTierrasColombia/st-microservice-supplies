@@ -41,7 +41,7 @@ public class SupplyBusiness {
 
     public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode, Long managerCode,
                                              Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
-                                             String modelVersion, Long supplyStateId, String name) throws BusinessException {
+                                             String modelVersion, Long supplyStateId, String name, Boolean hasGeometryValidation) throws BusinessException {
 
         if (supplyAttachments.size() == 0) {
             throw new BusinessException("El insumo debe contener al menos un adjunto.");
@@ -127,6 +127,9 @@ public class SupplyBusiness {
         supplyEntity.setTypeSupplyCode(typeSupplyCode);
         supplyEntity.setRequestCode(requestCode);
         supplyEntity.setManagerCode(managerCode);
+        if (hasGeometryValidation != null) {
+            supplyEntity.setHasGeometryValidation(hasGeometryValidation);
+        }
 
         if (modelVersion != null && !modelVersion.isEmpty()) {
             supplyEntity.setModelVersion(modelVersion);
@@ -277,6 +280,7 @@ public class SupplyBusiness {
         supplyDto.setRequestCode(supplyEntity.getRequestCode());
         supplyDto.setModelVersion(supplyEntity.getModelVersion());
         supplyDto.setManagerCode(supplyEntity.getManagerCode());
+        supplyDto.setHasGeometryValidation(supplyEntity.getHasGeometryValidation());
 
         List<SupplyOwnerDto> ownersDto = new ArrayList<>();
         for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {

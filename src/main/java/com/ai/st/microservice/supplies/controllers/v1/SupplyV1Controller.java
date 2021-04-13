@@ -47,8 +47,8 @@ public class SupplyV1Controller {
     @ResponseBody
     public ResponseEntity<Object> createSupply(@RequestBody CreateSupplyDto requestCreateSupply) {
 
-        HttpStatus httpStatus = null;
-        Object responseDto = null;
+        HttpStatus httpStatus;
+        Object responseDto;
 
         try {
 
@@ -88,7 +88,8 @@ public class SupplyV1Controller {
             responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations,
                     requestCreateSupply.getTypeSupplyCode(), managerCode, requestCreateSupply.getRequestCode(),
                     requestCreateSupply.getAttachments(), owners, requestCreateSupply.getModelVersion(),
-                    requestCreateSupply.getSupplyStateId(), requestCreateSupply.getName());
+                    requestCreateSupply.getSupplyStateId(), requestCreateSupply.getName(),
+                    requestCreateSupply.getHasGeometryValidation());
             httpStatus = HttpStatus.CREATED;
 
         } catch (InputValidationException e) {

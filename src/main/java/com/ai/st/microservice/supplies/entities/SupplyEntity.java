@@ -38,29 +38,32 @@ public class SupplyEntity {
     @Column(name = "municipality_code", nullable = false, length = 10)
     private String municipalityCode;
 
-    @Column(name = "name", nullable = true, length = 500)
+    @Column(name = "name", length = 500)
     private String name;
 
-    @Column(name = "observations", nullable = true, length = 500)
+    @Column(name = "observations", length = 500)
     private String observations;
 
-    @Column(name = "model_version", nullable = true, length = 20)
+    @Column(name = "model_version", length = 20)
     private String modelVersion;
 
-    @Column(name = "type_supply_code", nullable = true)
+    @Column(name = "type_supply_code")
     private Long typeSupplyCode;
 
-    @Column(name = "request_code", nullable = true)
+    @Column(name = "request_code")
     private Long requestCode;
 
     @Column(name = "manager_code", nullable = false)
     private Long managerCode;
 
-    @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
-    private List<SupplyAttachmentEntity> attachments = new ArrayList<SupplyAttachmentEntity>();
+    @Column(name = "has_geometry_validation")
+    private Boolean hasGeometryValidation;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
-    private List<SupplyOwnerEntity> owners = new ArrayList<SupplyOwnerEntity>();
+    private List<SupplyAttachmentEntity> attachments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
+    private List<SupplyOwnerEntity> owners = new ArrayList<>();
 
     public SupplyEntity() {
 
@@ -160,5 +163,13 @@ public class SupplyEntity {
 
     public void setManagerCode(Long managerCode) {
         this.managerCode = managerCode;
+    }
+
+    public Boolean getHasGeometryValidation() {
+        return hasGeometryValidation;
+    }
+
+    public void setHasGeometryValidation(Boolean hasGeometryValidation) {
+        this.hasGeometryValidation = hasGeometryValidation;
     }
 }
