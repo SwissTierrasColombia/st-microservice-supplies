@@ -21,42 +21,42 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Api(value = "Manage Attachment Types", tags = { "Attachment Types" })
+@Api(value = "Manage Attachment Types", tags = {"Attachment Types"})
 @RestController
 @RequestMapping("api/supplies/v1/attachments-types")
 public class AttachmentTypeV1Controller {
-	
-	private final Logger log = LoggerFactory.getLogger(AttachmentTypeV1Controller.class);
 
-	@Autowired
-	private SupplyAttachmentTypeBusiness supplyAttachmentTypeBusiness;	
+    private final Logger log = LoggerFactory.getLogger(AttachmentTypeV1Controller.class);
 
-	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Get attachmentes types")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Get attachmentes types", response = SupplyDto.class),
-			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
-	@ResponseBody
-	public ResponseEntity<?> getAttachmentsTypes() {
+    @Autowired
+    private SupplyAttachmentTypeBusiness supplyAttachmentTypeBusiness;
 
-		HttpStatus httpStatus = null;
-		Object responseDto = null;
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get attachmentes types")
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "Get attachmentes types", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ResponseBody
+    public ResponseEntity<?> getAttachmentsTypes() {
 
-		try {
+        HttpStatus httpStatus;
+        Object responseDto;
 
-			responseDto = supplyAttachmentTypeBusiness.getAttachmentsTypes();
-			httpStatus = HttpStatus.OK;
+        try {
 
-		} catch (BusinessException e) {
-			log.error("Error AttachmentTypeV1Controller@getAttachmentsTypes#Business ---> " + e.getMessage());
-			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-			responseDto = new ErrorDto(e.getMessage(), 2);
-		} catch (Exception e) {
-			log.error("Error AttachmentTypeV1Controller@getAttachmentsTypes#General ---> " + e.getMessage());
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			responseDto = new ErrorDto(e.getMessage(), 3);
-		}
+            responseDto = supplyAttachmentTypeBusiness.getAttachmentsTypes();
+            httpStatus = HttpStatus.OK;
 
-		return new ResponseEntity<>(responseDto, httpStatus);
-	}
+        } catch (BusinessException e) {
+            log.error("Error AttachmentTypeV1Controller@getAttachmentsTypes#Business ---> " + e.getMessage());
+            httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+            responseDto = new ErrorDto(e.getMessage(), 2);
+        } catch (Exception e) {
+            log.error("Error AttachmentTypeV1Controller@getAttachmentsTypes#General ---> " + e.getMessage());
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            responseDto = new ErrorDto(e.getMessage(), 3);
+        }
+
+        return new ResponseEntity<>(responseDto, httpStatus);
+    }
 
 }

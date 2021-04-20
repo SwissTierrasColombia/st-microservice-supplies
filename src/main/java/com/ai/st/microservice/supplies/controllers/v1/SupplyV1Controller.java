@@ -30,192 +30,200 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Api(value = "Manage Supplies", description = "Manage Supplies", tags = { "Supplies" })
+@Api(value = "Manage Supplies", description = "Manage Supplies", tags = {"Supplies"})
 @RestController
 @RequestMapping("api/supplies/v1/supplies")
 public class SupplyV1Controller {
 
-	private final Logger log = LoggerFactory.getLogger(SupplyV1Controller.class);
+    private final Logger log = LoggerFactory.getLogger(SupplyV1Controller.class);
 
-	@Autowired
-	private SupplyBusiness supplyBusiness;
+    @Autowired
+    private SupplyBusiness supplyBusiness;
 
-	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Create Supply")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Create supply", response = SupplyDto.class),
-			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
-	@ResponseBody
-	public ResponseEntity<Object> createSupply(@RequestBody CreateSupplyDto requestCreateSupply) {
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Create Supply")
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "Create supply", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ResponseBody
+    public ResponseEntity<Object> createSupply(@RequestBody CreateSupplyDto requestCreateSupply) {
 
-		HttpStatus httpStatus = null;
-		Object responseDto = null;
+        HttpStatus httpStatus;
+        Object responseDto;
 
-		try {
+        try {
 
-			// validation municipality code
-			String municipalityCode = requestCreateSupply.getMunicipalityCode();
-			if (municipalityCode.isEmpty()) {
-				throw new InputValidationException("El código del municipio es requerido");
-			}
+            // validation municipality code
+            String municipalityCode = requestCreateSupply.getMunicipalityCode();
+            if (municipalityCode.isEmpty()) {
+                throw new InputValidationException("El código del municipio es requerido");
+            }
 
-			// validation observations
-			String observations = requestCreateSupply.getObservations();
-			if (observations.isEmpty()) {
-				throw new InputValidationException("Las observaciones son requeridas.");
-			}
+            // validation manager code
+            Long managerCode = requestCreateSupply.getManagerCode();
+            if (managerCode == null || managerCode <= 0) {
+                throw new InputValidationException("El código del gestor es requerido");
+            }
 
-			// validation owners
-			List<CreateSupplyOwnerDto> owners = requestCreateSupply.getOwners();
-			if (owners.size() > 0) {
-				for (CreateSupplyOwnerDto owner : owners) {
-					if (owner.getOwnerCode() == null || owner.getOwnerCode() <= 0) {
-						throw new InputValidationException("El código de propietario es inválido.");
-					}
-					if (owner.getOwnerType() == null || owner.getOwnerType().isEmpty()) {
-						throw new InputValidationException("El typo de propietario es inválido.");
-					}
-				}
-			} else {
-				throw new InputValidationException("El insumo debe tener al menos un propietario.");
-			}
+            // validation observations
+            String observations = requestCreateSupply.getObservations();
+            if (observations.isEmpty()) {
+                throw new InputValidationException("Las observaciones son requeridas.");
+            }
 
-			responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations,
-					requestCreateSupply.getTypeSupplyCode(), requestCreateSupply.getRequestCode(),
-					requestCreateSupply.getAttachments(), owners, requestCreateSupply.getModelVersion(),
-					requestCreateSupply.getSupplyStateId(), requestCreateSupply.getName());
-			httpStatus = HttpStatus.CREATED;
+            // validation owners
+            List<CreateSupplyOwnerDto> owners = requestCreateSupply.getOwners();
+            if (owners.size() > 0) {
+                for (CreateSupplyOwnerDto owner : owners) {
+                    if (owner.getOwnerCode() == null || owner.getOwnerCode() <= 0) {
+                        throw new InputValidationException("El código de propietario es inválido.");
+                    }
+                    if (owner.getOwnerType() == null || owner.getOwnerType().isEmpty()) {
+                        throw new InputValidationException("El typo de propietario es inválido.");
+                    }
+                }
+            } else {
+                throw new InputValidationException("El insumo debe tener al menos un propietario.");
+            }
 
-		} catch (InputValidationException e) {
-			log.error("Error SupplyV1Controller@createSupply#Validation ---> " + e.getMessage());
-			httpStatus = HttpStatus.BAD_REQUEST;
-			responseDto = new ErrorDto(e.getMessage(), 1);
-		} catch (BusinessException e) {
-			log.error("Error SupplyV1Controller@createSupply#Business ---> " + e.getMessage());
-			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-			responseDto = new ErrorDto(e.getMessage(), 2);
-		} catch (Exception e) {
-			log.error("Error SupplyV1Controller@createSupply#General ---> " + e.getMessage());
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			responseDto = new ErrorDto(e.getMessage(), 3);
-		}
+            responseDto = supplyBusiness.addSupplyToMunicipality(municipalityCode, observations,
+                    requestCreateSupply.getTypeSupplyCode(), managerCode, requestCreateSupply.getRequestCode(),
+                    requestCreateSupply.getAttachments(), owners, requestCreateSupply.getModelVersion(),
+                    requestCreateSupply.getSupplyStateId(), requestCreateSupply.getName(),
+                    requestCreateSupply.getHasGeometryValidation());
+            httpStatus = HttpStatus.CREATED;
 
-		return new ResponseEntity<>(responseDto, httpStatus);
-	}
+        } catch (InputValidationException e) {
+            log.error("Error SupplyV1Controller@createSupply#Validation ---> " + e.getMessage());
+            httpStatus = HttpStatus.BAD_REQUEST;
+            responseDto = new ErrorDto(e.getMessage(), 1);
+        } catch (BusinessException e) {
+            log.error("Error SupplyV1Controller@createSupply#Business ---> " + e.getMessage());
+            httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+            responseDto = new ErrorDto(e.getMessage(), 2);
+        } catch (Exception e) {
+            log.error("Error SupplyV1Controller@createSupply#General ---> " + e.getMessage());
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            responseDto = new ErrorDto(e.getMessage(), 3);
+        }
 
-	@RequestMapping(value = "municipality/{municipalityId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Get supplies by municipality")
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Get supplies", response = SupplyDto.class, responseContainer = "List"),
-			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
-	@ResponseBody
-	public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId,
-			@RequestParam(name = "page", required = false) Integer page,
-			@RequestParam(name = "requests", required = false) List<Long> requests,
-			@RequestParam(name = "states", required = false) List<Long> states) {
+        return new ResponseEntity<>(responseDto, httpStatus);
+    }
 
-		HttpStatus httpStatus = null;
-		Object responseDto = null;
+    @RequestMapping(value = "municipality/{municipalityId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get supplies by municipality")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Get supplies", response = SupplyDto.class, responseContainer = "List"),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ResponseBody
+    public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId,
+                                                       @RequestParam(name = "page", required = false) Integer page,
+                                                       @RequestParam(name = "manager", required = false) Long managerCode,
+                                                       @RequestParam(name = "requests", required = false) List<Long> requests,
+                                                       @RequestParam(name = "states", required = false) List<Long> states) {
 
-		try {
-			responseDto = supplyBusiness.getSuppliesByMunicipality(municipalityId, page, requests, states);
-			httpStatus = HttpStatus.OK;
-		} catch (BusinessException e) {
-			log.error("Error SupplyV1Controller@getSuppliesByMunicipality#Business ---> " + e.getMessage());
-			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-			responseDto = new ErrorDto(e.getMessage(), 2);
-		} catch (Exception e) {
-			log.error("Error SupplyV1Controller@getSuppliesByMunicipality#General ---> " + e.getMessage());
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			responseDto = new ErrorDto(e.getMessage(), 3);
-		}
+        HttpStatus httpStatus;
+        Object responseDto;
 
-		return new ResponseEntity<>(responseDto, httpStatus);
-	}
+        try {
+            responseDto = supplyBusiness.getSuppliesByMunicipality(municipalityId, page, requests, states, managerCode);
+            httpStatus = HttpStatus.OK;
+        } catch (BusinessException e) {
+            log.error("Error SupplyV1Controller@getSuppliesByMunicipality#Business ---> " + e.getMessage());
+            httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+            responseDto = new ErrorDto(e.getMessage(), 2);
+        } catch (Exception e) {
+            log.error("Error SupplyV1Controller@getSuppliesByMunicipality#General ---> " + e.getMessage());
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            responseDto = new ErrorDto(e.getMessage(), 3);
+        }
 
-	@RequestMapping(value = "{supplyId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Get supply by id")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Get supply", response = SupplyDto.class),
-			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
-	@ResponseBody
-	public ResponseEntity<?> getSupplyById(@PathVariable Long supplyId) {
+        return new ResponseEntity<>(responseDto, httpStatus);
+    }
 
-		HttpStatus httpStatus = null;
-		Object responseDto = null;
+    @RequestMapping(value = "{supplyId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get supply by id")
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "Get supply", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ResponseBody
+    public ResponseEntity<?> getSupplyById(@PathVariable Long supplyId) {
 
-		try {
+        HttpStatus httpStatus;
+        Object responseDto;
 
-			responseDto = supplyBusiness.getSupplyById(supplyId);
-			httpStatus = (responseDto == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+        try {
 
-		} catch (BusinessException e) {
-			log.error("Error SupplyV1Controller@getSupplyById#Business ---> " + e.getMessage());
-			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-			responseDto = new ErrorDto(e.getMessage(), 2);
-		} catch (Exception e) {
-			log.error("Error SupplyV1Controller@getSupplyById#General ---> " + e.getMessage());
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			responseDto = new ErrorDto(e.getMessage(), 3);
-		}
+            responseDto = supplyBusiness.getSupplyById(supplyId);
+            httpStatus = (responseDto == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
 
-		return new ResponseEntity<>(responseDto, httpStatus);
-	}
+        } catch (BusinessException e) {
+            log.error("Error SupplyV1Controller@getSupplyById#Business ---> " + e.getMessage());
+            httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+            responseDto = new ErrorDto(e.getMessage(), 2);
+        } catch (Exception e) {
+            log.error("Error SupplyV1Controller@getSupplyById#General ---> " + e.getMessage());
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            responseDto = new ErrorDto(e.getMessage(), 3);
+        }
 
-	@RequestMapping(value = "{supplyId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Delete supply by id")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Supply deleted", response = SupplyDto.class),
-			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
-	@ResponseBody
-	public ResponseEntity<?> deleteSupplyById(@PathVariable Long supplyId) {
+        return new ResponseEntity<>(responseDto, httpStatus);
+    }
 
-		HttpStatus httpStatus = null;
-		Object responseDto = null;
+    @RequestMapping(value = "{supplyId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Delete supply by id")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "Supply deleted", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ResponseBody
+    public ResponseEntity<?> deleteSupplyById(@PathVariable Long supplyId) {
 
-		try {
+        HttpStatus httpStatus = null;
+        Object responseDto = null;
 
-			supplyBusiness.deleteSupplyById(supplyId);
+        try {
 
-			responseDto = new ErrorDto("Se ha eliminado el insumo", 7);
-			httpStatus = HttpStatus.NO_CONTENT;
+            supplyBusiness.deleteSupplyById(supplyId);
 
-		} catch (BusinessException e) {
-			log.error("Error SupplyV1Controller@deleteSupplyById#Business ---> " + e.getMessage());
-			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-			responseDto = new ErrorDto(e.getMessage(), 2);
-		} catch (Exception e) {
-			log.error("Error SupplyV1Controller@deleteSupplyById#General ---> " + e.getMessage());
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			responseDto = new ErrorDto(e.getMessage(), 3);
-		}
+            responseDto = new ErrorDto("Se ha eliminado el insumo", 7);
+            httpStatus = HttpStatus.NO_CONTENT;
 
-		return new ResponseEntity<>(responseDto, httpStatus);
-	}
+        } catch (BusinessException e) {
+            log.error("Error SupplyV1Controller@deleteSupplyById#Business ---> " + e.getMessage());
+            httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+            responseDto = new ErrorDto(e.getMessage(), 2);
+        } catch (Exception e) {
+            log.error("Error SupplyV1Controller@deleteSupplyById#General ---> " + e.getMessage());
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            responseDto = new ErrorDto(e.getMessage(), 3);
+        }
 
-	@RequestMapping(value = "{supplyId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Update supply by id")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Supply upated", response = SupplyDto.class),
-			@ApiResponse(code = 500, message = "Error Server", response = String.class) })
-	@ResponseBody
-	public ResponseEntity<?> updateSupply(@PathVariable Long supplyId, @RequestBody UpdateSupplyDto updateSupplyDto) {
+        return new ResponseEntity<>(responseDto, httpStatus);
+    }
 
-		HttpStatus httpStatus = null;
-		Object responseDto = null;
+    @RequestMapping(value = "{supplyId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update supply by id")
+    @ApiResponses(value = {@ApiResponse(code = 204, message = "Supply upated", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ResponseBody
+    public ResponseEntity<?> updateSupply(@PathVariable Long supplyId, @RequestBody UpdateSupplyDto updateSupplyDto) {
 
-		try {
+        HttpStatus httpStatus = null;
+        Object responseDto = null;
 
-			responseDto = supplyBusiness.updateSupply(supplyId, updateSupplyDto.getStateId());
-			httpStatus = HttpStatus.OK;
+        try {
 
-		} catch (BusinessException e) {
-			log.error("Error SupplyV1Controller@updateSupply#Business ---> " + e.getMessage());
-			httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-			responseDto = new ErrorDto(e.getMessage(), 2);
-		} catch (Exception e) {
-			log.error("Error SupplyV1Controller@updateSupply#General ---> " + e.getMessage());
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			responseDto = new ErrorDto(e.getMessage(), 3);
-		}
+            responseDto = supplyBusiness.updateSupply(supplyId, updateSupplyDto.getStateId());
+            httpStatus = HttpStatus.OK;
 
-		return new ResponseEntity<>(responseDto, httpStatus);
-	}
+        } catch (BusinessException e) {
+            log.error("Error SupplyV1Controller@updateSupply#Business ---> " + e.getMessage());
+            httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+            responseDto = new ErrorDto(e.getMessage(), 2);
+        } catch (Exception e) {
+            log.error("Error SupplyV1Controller@updateSupply#General ---> " + e.getMessage());
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            responseDto = new ErrorDto(e.getMessage(), 3);
+        }
+
+        return new ResponseEntity<>(responseDto, httpStatus);
+    }
 
 }

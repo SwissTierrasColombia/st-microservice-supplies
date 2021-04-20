@@ -10,110 +10,131 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "CreateSupplyDto")
 public class CreateSupplyDto implements Serializable {
 
-	private static final long serialVersionUID = 7367459622173301312L;
+    private static final long serialVersionUID = 7367459622173301312L;
 
-	@ApiModelProperty(required = true, notes = "Municipality Code (DIVIPOLA)")
-	private String municipalityCode;
+    @ApiModelProperty(required = true, notes = "Municipality Code (DIVIPOLA)")
+    private String municipalityCode;
 
-	@ApiModelProperty(required = true, notes = "Name")
-	private String name;
+    @ApiModelProperty(required = true, notes = "Name")
+    private String name;
 
-	@ApiModelProperty(required = true, notes = "Observations")
-	private String observations;
+    @ApiModelProperty(required = true, notes = "Observations")
+    private String observations;
 
-	@ApiModelProperty(required = false, notes = "Type Supply Code")
-	private Long typeSupplyCode;
+    @ApiModelProperty(notes = "Type Supply Code")
+    private Long typeSupplyCode;
 
-	@ApiModelProperty(required = false, notes = "Type Supply Code")
-	private Long requestCode;
+    @ApiModelProperty(notes = "Type Supply Code")
+    private Long requestCode;
 
-	@ApiModelProperty(required = false, notes = "Model version")
-	private String modelVersion;
+    @ApiModelProperty(required = true, notes = "Manager Code")
+    private Long managerCode;
 
-	@ApiModelProperty(required = false, notes = "State ID")
-	private Long supplyStateId;
+    @ApiModelProperty(notes = "Model version")
+    private String modelVersion;
 
-	@ApiModelProperty(required = true, notes = "Owners")
-	private List<CreateSupplyOwnerDto> owners;
+    @ApiModelProperty(notes = "State ID")
+    private Long supplyStateId;
 
-	@ApiModelProperty(required = false, notes = "Attachments")
-	private List<CreateSupplyAttachmentDto> attachments;
+    @ApiModelProperty(required = true, notes = "Owners")
+    private List<CreateSupplyOwnerDto> owners;
 
-	public CreateSupplyDto() {
-		this.owners = new ArrayList<CreateSupplyOwnerDto>();
-		this.attachments = new ArrayList<CreateSupplyAttachmentDto>();
-	}
+    @ApiModelProperty(notes = "Attachments")
+    private List<CreateSupplyAttachmentDto> attachments;
 
-	public String getMunicipalityCode() {
-		return municipalityCode;
-	}
+    @ApiModelProperty(notes = "Has geometry validation?")
+    private Boolean hasGeometryValidation;
 
-	public void setMunicipalityCode(String municipalityCode) {
-		this.municipalityCode = municipalityCode;
-	}
+    public CreateSupplyDto() {
+        this.owners = new ArrayList<>();
+        this.attachments = new ArrayList<>();
+    }
 
-	public String getObservations() {
-		return observations;
-	}
+    public String getMunicipalityCode() {
+        return municipalityCode;
+    }
 
-	public void setObservations(String observations) {
-		this.observations = observations;
-	}
+    public void setMunicipalityCode(String municipalityCode) {
+        this.municipalityCode = municipalityCode;
+    }
 
-	public Long getTypeSupplyCode() {
-		return typeSupplyCode;
-	}
+    public String getObservations() {
+        return observations;
+    }
 
-	public void setTypeSupplyCode(Long typeSupplyCode) {
-		this.typeSupplyCode = typeSupplyCode;
-	}
+    public void setObservations(String observations) {
+        this.observations = observations;
+    }
 
-	public List<CreateSupplyOwnerDto> getOwners() {
-		return owners;
-	}
+    public Long getTypeSupplyCode() {
+        return typeSupplyCode;
+    }
 
-	public void setOwners(List<CreateSupplyOwnerDto> owners) {
-		this.owners = owners;
-	}
+    public void setTypeSupplyCode(Long typeSupplyCode) {
+        this.typeSupplyCode = typeSupplyCode;
+    }
 
-	public Long getRequestCode() {
-		return requestCode;
-	}
+    public List<CreateSupplyOwnerDto> getOwners() {
+        return owners;
+    }
 
-	public void setRequestCode(Long requestCode) {
-		this.requestCode = requestCode;
-	}
+    public void setOwners(List<CreateSupplyOwnerDto> owners) {
+        this.owners = owners;
+    }
 
-	public String getModelVersion() {
-		return modelVersion;
-	}
+    public Long getRequestCode() {
+        return requestCode;
+    }
 
-	public void setModelVersion(String modelVersion) {
-		this.modelVersion = modelVersion;
-	}
+    public void setRequestCode(Long requestCode) {
+        this.requestCode = requestCode;
+    }
 
-	public List<CreateSupplyAttachmentDto> getAttachments() {
-		return attachments;
-	}
+    public String getModelVersion() {
+        return modelVersion;
+    }
 
-	public void setAttachments(List<CreateSupplyAttachmentDto> attachments) {
-		this.attachments = attachments;
-	}
+    public void setModelVersion(String modelVersion) {
+        this.modelVersion = modelVersion;
+    }
 
-	public Long getSupplyStateId() {
-		return supplyStateId;
-	}
+    public List<CreateSupplyAttachmentDto> getAttachments() {
+        return attachments;
+    }
 
-	public void setSupplyStateId(Long supplyStateId) {
-		this.supplyStateId = supplyStateId;
-	}
+    public void setAttachments(List<CreateSupplyAttachmentDto> attachments) {
+        this.attachments = attachments;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Long getSupplyStateId() {
+        return supplyStateId;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setSupplyStateId(Long supplyStateId) {
+        this.supplyStateId = supplyStateId;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getManagerCode() {
+        return managerCode;
+    }
+
+    public void setManagerCode(Long managerCode) {
+        this.managerCode = managerCode;
+    }
+
+    public Boolean getHasGeometryValidation() {
+        return hasGeometryValidation;
+    }
+
+    public void setHasGeometryValidation(Boolean hasGeometryValidation) {
+        this.hasGeometryValidation = hasGeometryValidation;
+    }
 }
