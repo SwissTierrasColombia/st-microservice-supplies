@@ -30,271 +30,283 @@ import com.ai.st.microservice.supplies.services.ISupplyStateService;
 @Component
 public class SupplyBusiness {
 
-	@Autowired
-	private ISupplyStateService supplyStateService;
+    @Autowired
+    private ISupplyStateService supplyStateService;
 
-	@Autowired
-	private ISupplyService supplyService;
+    @Autowired
+    private ISupplyService supplyService;
 
-	@Autowired
-	private ISupplyAttachmentTypeService attachmentTypeService;
+    @Autowired
+    private ISupplyAttachmentTypeService attachmentTypeService;
 
-	public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
-			Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
-			String modelVersion, Long supplyStateId, String name) throws BusinessException {
+    public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode, Long managerCode,
+                                             Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
+                                             String modelVersion, Long supplyStateId, String name, Boolean hasGeometryValidation) throws BusinessException {
 
-		if (supplyAttachments.size() == 0) {
-			throw new BusinessException("El insumo debe contener al menos un adjunto.");
-		}
+        if (supplyAttachments.size() == 0) {
+            throw new BusinessException("El insumo debe contener al menos un adjunto.");
+        }
 
-		// owners
-		for (CreateSupplyOwnerDto owner : owners) {
+        // owners
+        for (CreateSupplyOwnerDto owner : owners) {
 
-			// verify type emitter
-			if (!owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())
-					&& !owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())
-					&& !owner.getOwnerType().equals(OwnerTypeEnum.USER.name())
-					&& !owner.getOwnerType().equals(OwnerTypeEnum.CADASTRAL_AUTHORITY.name())) {
-				throw new BusinessException("El tipo de propietario es inválido.");
-			}
+            // verify type emitter
+            if (!owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())
+                    && !owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())
+                    && !owner.getOwnerType().equals(OwnerTypeEnum.USER.name())
+                    && !owner.getOwnerType().equals(OwnerTypeEnum.CADASTRAL_AUTHORITY.name())) {
+                throw new BusinessException("El tipo de propietario es inválido.");
+            }
 
-		}
-		
-		if (supplyStateId == null) {
-			supplyStateId = SupplyStateBusiness.SUPPLY_STATE_ACTIVE;
-		}
+        }
 
-		SupplyStateEntity supplyState = supplyStateService.getSupplyStateById(supplyStateId);
-		if (supplyState == null) {
-			throw new BusinessException("El estado del insumo no existe");
-		}
+        if (supplyStateId == null) {
+            supplyStateId = SupplyStateBusiness.SUPPLY_STATE_ACTIVE;
+        }
 
-		SupplyEntity supplyEntity = new SupplyEntity();
+        SupplyStateEntity supplyState = supplyStateService.getSupplyStateById(supplyStateId);
+        if (supplyState == null) {
+            throw new BusinessException("El estado del insumo no existe");
+        }
 
-		// attachments
-		List<SupplyAttachmentEntity> attachments = new ArrayList<SupplyAttachmentEntity>();
-		for (CreateSupplyAttachmentDto createAttachmentDto : supplyAttachments) {
+        SupplyEntity supplyEntity = new SupplyEntity();
 
-			SupplyAttachmentTypeEntity attachmentType = attachmentTypeService
-					.getAttachmentTypeById(createAttachmentDto.getAttachmentTypeId());
+        // attachments
+        List<SupplyAttachmentEntity> attachments = new ArrayList<>();
+        for (CreateSupplyAttachmentDto createAttachmentDto : supplyAttachments) {
 
-			if (attachmentType == null) {
-				throw new BusinessException("El tipo de adjunto no es válido.");
-			}
+            SupplyAttachmentTypeEntity attachmentType = attachmentTypeService
+                    .getAttachmentTypeById(createAttachmentDto.getAttachmentTypeId());
 
-			SupplyAttachmentEntity attachementEntity = new SupplyAttachmentEntity();
-			attachementEntity.setCreatedAt(new Date());
-			attachementEntity.setSupply(supplyEntity);
-			attachementEntity.setData(createAttachmentDto.getData());
-			attachementEntity.setAttachmentType(attachmentType);
-			attachments.add(attachementEntity);
-		}
-		supplyEntity.setAttachments(attachments);
+            if (attachmentType == null) {
+                throw new BusinessException("El tipo de adjunto no es válido.");
+            }
 
-		// owners
-		List<SupplyOwnerEntity> ownersEntity = new ArrayList<SupplyOwnerEntity>();
-		for (CreateSupplyOwnerDto owner : owners) {
+            SupplyAttachmentEntity attachmentEntity = new SupplyAttachmentEntity();
+            attachmentEntity.setCreatedAt(new Date());
+            attachmentEntity.setSupply(supplyEntity);
+            attachmentEntity.setData(createAttachmentDto.getData());
+            attachmentEntity.setAttachmentType(attachmentType);
+            attachments.add(attachmentEntity);
+        }
+        supplyEntity.setAttachments(attachments);
 
-			SupplyOwnerEntity ownerEntity = new SupplyOwnerEntity();
-			ownerEntity.setCreatedAt(new Date());
-			ownerEntity.setOwnerCode(owner.getOwnerCode());
+        // owners
+        List<SupplyOwnerEntity> ownersEntity = new ArrayList<>();
+        for (CreateSupplyOwnerDto owner : owners) {
 
-			OwnerTypeEnum ownerType = null;
-			if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())) {
-				ownerType = OwnerTypeEnum.ENTITY_MANAGER;
-			} else if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())) {
-				ownerType = OwnerTypeEnum.ENTITY_PROVIDER;
-			} else if (owner.getOwnerType().equals(OwnerTypeEnum.CADASTRAL_AUTHORITY.name())) {
-				ownerType = OwnerTypeEnum.CADASTRAL_AUTHORITY;
-			} else {
-				ownerType = OwnerTypeEnum.USER;
-			}
+            SupplyOwnerEntity ownerEntity = new SupplyOwnerEntity();
+            ownerEntity.setCreatedAt(new Date());
+            ownerEntity.setOwnerCode(owner.getOwnerCode());
 
-			ownerEntity.setOwnerType(ownerType);
-			ownerEntity.setSupply(supplyEntity);
-			ownersEntity.add(ownerEntity);
-		}
-		supplyEntity.setOwners(ownersEntity);
-		
-		if (name != null) {
-			supplyEntity.setName(name);
-		}
+            OwnerTypeEnum ownerType;
+            if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_MANAGER.name())) {
+                ownerType = OwnerTypeEnum.ENTITY_MANAGER;
+            } else if (owner.getOwnerType().equals(OwnerTypeEnum.ENTITY_PROVIDER.name())) {
+                ownerType = OwnerTypeEnum.ENTITY_PROVIDER;
+            } else if (owner.getOwnerType().equals(OwnerTypeEnum.CADASTRAL_AUTHORITY.name())) {
+                ownerType = OwnerTypeEnum.CADASTRAL_AUTHORITY;
+            } else {
+                ownerType = OwnerTypeEnum.USER;
+            }
 
-		supplyEntity.setCreatedAt(new Date());
-		supplyEntity.setMunicipalityCode(municipalityCode);
-		supplyEntity.setObservations(observations);
-		supplyEntity.setState(supplyState);
-		supplyEntity.setTypeSupplyCode(typeSupplyCode);
-		supplyEntity.setRequestCode(requestCode);
+            ownerEntity.setOwnerType(ownerType);
+            ownerEntity.setSupply(supplyEntity);
+            ownersEntity.add(ownerEntity);
+        }
+        supplyEntity.setOwners(ownersEntity);
 
-		if (modelVersion != null && !modelVersion.isEmpty())
+        if (name != null) {
+            supplyEntity.setName(name);
+        }
 
-		{
-			supplyEntity.setModelVersion(modelVersion);
-		}
+        supplyEntity.setCreatedAt(new Date());
+        supplyEntity.setMunicipalityCode(municipalityCode);
+        supplyEntity.setObservations(observations);
+        supplyEntity.setState(supplyState);
+        supplyEntity.setTypeSupplyCode(typeSupplyCode);
+        supplyEntity.setRequestCode(requestCode);
+        supplyEntity.setManagerCode(managerCode);
+        if (hasGeometryValidation != null) {
+            supplyEntity.setHasGeometryValidation(hasGeometryValidation);
+        }
 
-		supplyEntity = supplyService.createSupply(supplyEntity);
+        if (modelVersion != null && !modelVersion.isEmpty()) {
+            supplyEntity.setModelVersion(modelVersion);
+        }
 
-		SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+        supplyEntity = supplyService.createSupply(supplyEntity);
 
-		return supplyDto;
-	}
+        return this.transformEntityToDto(supplyEntity);
+    }
 
-	public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests,
-			List<Long> states) throws BusinessException {
+    public List<SupplyDto> getSuppliesXTFByMunicipality(String municipalityCode, Long managerCode) {
 
-		List<SupplyDto> suppliesDto = new ArrayList<>();
+        List<SupplyEntity> supplyEntities = supplyService.getSuppliesXTFByManager(managerCode, municipalityCode);
 
-		List<SupplyEntity> suppliesEntity = new ArrayList<>();
-		Page<SupplyEntity> pageEntity = null;
+        List<SupplyDto> supplyDtoList = new ArrayList<>();
 
-		List<SupplyStateEntity> statesEntity = new ArrayList<SupplyStateEntity>();
+        for (SupplyEntity supplyEntity : supplyEntities) {
+            supplyDtoList.add(transformEntityToDto(supplyEntity));
+        }
 
-		if (states == null) {
+        return supplyDtoList;
+    }
 
-			SupplyStateEntity stateActive = supplyStateService
-					.getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_ACTIVE);
-			SupplyStateEntity stateInactive = supplyStateService
-					.getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_INACTIVE);
-			SupplyStateEntity stateRemoved = supplyStateService
-					.getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_REMOVED);
+    public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests,
+                                            List<Long> states, Long managerCode) throws BusinessException {
 
-			statesEntity.add(stateActive);
-			statesEntity.add(stateInactive);
-			statesEntity.add(stateRemoved);
+        List<SupplyDto> suppliesDto = new ArrayList<>();
 
-		} else {
-			for (Long stateId : states) {
-				SupplyStateEntity stateEntity = supplyStateService.getSupplyStateById(stateId);
-				if (stateEntity != null) {
-					statesEntity.add(stateEntity);
-				}
-			}
-		}
+        List<SupplyEntity> suppliesEntity;
+        Page<SupplyEntity> pageEntity = null;
 
-		if (page == null) {
-			suppliesEntity = supplyService.getSuppliesByMunicipalityCodeAndStates(municipalityCode, statesEntity);
-		} else {
+        List<SupplyStateEntity> statesEntity = new ArrayList<>();
 
-			if (requests != null && requests.size() > 0) {
-				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(municipalityCode,
-						requests, statesEntity, page - 1, 10);
-				suppliesEntity = pageEntity.toList();
-			} else {
-				pageEntity = supplyService.getSuppliesByMunicipalityCodeAndStatesPaginated(municipalityCode,
-						statesEntity, page - 1, 10);
-				suppliesEntity = pageEntity.toList();
-			}
-		}
+        if (states == null) {
 
-		for (SupplyEntity supplyEntity : suppliesEntity) {
-			SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
-			suppliesDto.add(supplyDto);
-		}
+            SupplyStateEntity stateActive = supplyStateService
+                    .getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_ACTIVE);
+            SupplyStateEntity stateInactive = supplyStateService
+                    .getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_INACTIVE);
+            SupplyStateEntity stateRemoved = supplyStateService
+                    .getSupplyStateById(SupplyStateBusiness.SUPPLY_STATE_REMOVED);
 
-		if (page != null) {
-			DataPaginatedDto dataPaginatedDto = new DataPaginatedDto();
-			dataPaginatedDto.setNumber(pageEntity.getNumber());
-			dataPaginatedDto.setItems(suppliesDto);
-			dataPaginatedDto.setNumberOfElements(pageEntity.getNumberOfElements());
-			dataPaginatedDto.setTotalElements(pageEntity.getTotalElements());
-			dataPaginatedDto.setTotalPages(pageEntity.getTotalPages());
-			dataPaginatedDto.setSize(pageEntity.getSize());
-			return dataPaginatedDto;
-		}
+            statesEntity.add(stateActive);
+            statesEntity.add(stateInactive);
+            statesEntity.add(stateRemoved);
 
-		return suppliesDto;
-	}
+        } else {
+            for (Long stateId : states) {
+                SupplyStateEntity stateEntity = supplyStateService.getSupplyStateById(stateId);
+                if (stateEntity != null) {
+                    statesEntity.add(stateEntity);
+                }
+            }
+        }
 
-	public SupplyDto getSupplyById(Long supplyId) throws BusinessException {
+        if (page == null) {
+            suppliesEntity = supplyService.getSuppliesByMunicipalityCodeAndStates(municipalityCode, statesEntity);
+        } else {
 
-		SupplyDto supplyDto = null;
+            if (requests != null && requests.size() > 0) {
+                pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(municipalityCode,
+                        requests, statesEntity, page - 1, 10);
+            } else {
+                pageEntity = supplyService.getSuppliesByMunicipalityCodeAndStatesPaginated(municipalityCode, managerCode,
+                        statesEntity, page - 1, 10);
+            }
+            suppliesEntity = pageEntity.toList();
+        }
 
-		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
-		if (supplyEntity instanceof SupplyEntity) {
-			supplyDto = this.transformEntityToDto(supplyEntity);
-		}
+        for (SupplyEntity supplyEntity : suppliesEntity) {
+            SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+            suppliesDto.add(supplyDto);
+        }
 
-		return supplyDto;
-	}
+        if (page != null) {
+            DataPaginatedDto dataPaginatedDto = new DataPaginatedDto();
+            dataPaginatedDto.setNumber(pageEntity.getNumber());
+            dataPaginatedDto.setItems(suppliesDto);
+            dataPaginatedDto.setNumberOfElements(pageEntity.getNumberOfElements());
+            dataPaginatedDto.setTotalElements(pageEntity.getTotalElements());
+            dataPaginatedDto.setTotalPages(pageEntity.getTotalPages());
+            dataPaginatedDto.setSize(pageEntity.getSize());
+            return dataPaginatedDto;
+        }
 
-	public void deleteSupplyById(Long supplyId) throws BusinessException {
+        return suppliesDto;
+    }
 
-		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
-		if (!(supplyEntity instanceof SupplyEntity)) {
-			throw new BusinessException("No se ha encontrado el insumo.");
-		}
+    public SupplyDto getSupplyById(Long supplyId) throws BusinessException {
 
-		try {
+        SupplyDto supplyDto = null;
 
-			supplyService.deleteSupplyById(supplyId);
+        SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+        if (supplyEntity != null) {
+            supplyDto = this.transformEntityToDto(supplyEntity);
+        }
 
-		} catch (Exception e) {
-			throw new BusinessException("No se ha podido eliminar el insumo.");
-		}
+        return supplyDto;
+    }
 
-	}
+    public void deleteSupplyById(Long supplyId) throws BusinessException {
 
-	public SupplyDto updateSupply(Long supplyId, Long stateId) throws BusinessException {
+        SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+        if (supplyEntity == null) {
+            throw new BusinessException("No se ha encontrado el insumo.");
+        }
 
-		SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
-		if (!(supplyEntity instanceof SupplyEntity)) {
-			throw new BusinessException("No se ha encontrado el insumo.");
-		}
+        try {
 
-		if (stateId != null) {
-			SupplyStateEntity stateEntity = supplyStateService.getSupplyStateById(stateId);
-			if (stateEntity == null) {
-				throw new BusinessException("El estado del insumo no existe.");
-			}
-			supplyEntity.setState(stateEntity);
-		}
+            supplyService.deleteSupplyById(supplyId);
 
-		supplyEntity = supplyService.createSupply(supplyEntity);
+        } catch (Exception e) {
+            throw new BusinessException("No se ha podido eliminar el insumo.");
+        }
 
-		SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
+    }
 
-		return supplyDto;
-	}
+    public SupplyDto updateSupply(Long supplyId, Long stateId) throws BusinessException {
 
-	protected SupplyDto transformEntityToDto(SupplyEntity supplyEntity) {
+        SupplyEntity supplyEntity = supplyService.getSupplyById(supplyId);
+        if (supplyEntity == null) {
+            throw new BusinessException("No se ha encontrado el insumo.");
+        }
 
-		SupplyDto supplyDto = new SupplyDto();
-		supplyDto.setId(supplyEntity.getId());
-		supplyDto.setName(supplyEntity.getName());
-		supplyDto.setCreatedAt(supplyEntity.getCreatedAt());
-		supplyDto.setMunicipalityCode(supplyEntity.getMunicipalityCode());
-		supplyDto.setObservations(supplyEntity.getObservations());
-		supplyDto.setState(new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
-		supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
-		supplyDto.setRequestCode(supplyEntity.getRequestCode());
-		supplyDto.setModelVersion(supplyEntity.getModelVersion());
+        if (stateId != null) {
+            SupplyStateEntity stateEntity = supplyStateService.getSupplyStateById(stateId);
+            if (stateEntity == null) {
+                throw new BusinessException("El estado del insumo no existe.");
+            }
+            supplyEntity.setState(stateEntity);
+        }
 
-		List<SupplyOwnerDto> ownersDto = new ArrayList<SupplyOwnerDto>();
-		for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {
-			SupplyOwnerDto ownerDto = new SupplyOwnerDto();
-			ownerDto.setCreatedAt(ownerEntity.getCreatedAt());
-			ownerDto.setId(ownerEntity.getId());
-			ownerDto.setOwnerCode(ownerEntity.getOwnerCode());
-			ownerDto.setOwnerType(ownerEntity.getOwnerType().name());
-			ownersDto.add(ownerDto);
-		}
-		supplyDto.setOwners(ownersDto);
+        supplyEntity = supplyService.createSupply(supplyEntity);
 
-		List<SupplyAttachmentDto> attachmentsDto = new ArrayList<SupplyAttachmentDto>();
-		for (SupplyAttachmentEntity attachmentEntity : supplyEntity.getAttachments()) {
-			SupplyAttachmentDto attachmentDto = new SupplyAttachmentDto();
-			attachmentDto.setCreatedAt(attachmentEntity.getCreatedAt());
-			attachmentDto.setId(attachmentEntity.getId());
-			attachmentDto.setData(attachmentEntity.getData());
-			SupplyAttachmentTypeEntity attachmentTypeEntity = attachmentEntity.getAttachmentType();
-			attachmentDto.setAttachmentType(
-					new SupplyAttachmentTypeDto(attachmentTypeEntity.getId(), attachmentTypeEntity.getName()));
-			attachmentsDto.add(attachmentDto);
-		}
-		supplyDto.setAttachments(attachmentsDto);
+        return this.transformEntityToDto(supplyEntity);
+    }
 
-		return supplyDto;
-	}
+    protected SupplyDto transformEntityToDto(SupplyEntity supplyEntity) {
+
+        SupplyDto supplyDto = new SupplyDto();
+        supplyDto.setId(supplyEntity.getId());
+        supplyDto.setName(supplyEntity.getName());
+        supplyDto.setCreatedAt(supplyEntity.getCreatedAt());
+        supplyDto.setMunicipalityCode(supplyEntity.getMunicipalityCode());
+        supplyDto.setObservations(supplyEntity.getObservations());
+        supplyDto.setState(new SupplyStateDto(supplyEntity.getState().getId(), supplyEntity.getState().getName()));
+        supplyDto.setTypeSupplyCode(supplyEntity.getTypeSupplyCode());
+        supplyDto.setRequestCode(supplyEntity.getRequestCode());
+        supplyDto.setModelVersion(supplyEntity.getModelVersion());
+        supplyDto.setManagerCode(supplyEntity.getManagerCode());
+        supplyDto.setHasGeometryValidation(supplyEntity.getHasGeometryValidation());
+
+        List<SupplyOwnerDto> ownersDto = new ArrayList<>();
+        for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {
+            SupplyOwnerDto ownerDto = new SupplyOwnerDto();
+            ownerDto.setCreatedAt(ownerEntity.getCreatedAt());
+            ownerDto.setId(ownerEntity.getId());
+            ownerDto.setOwnerCode(ownerEntity.getOwnerCode());
+            ownerDto.setOwnerType(ownerEntity.getOwnerType().name());
+            ownersDto.add(ownerDto);
+        }
+        supplyDto.setOwners(ownersDto);
+
+        List<SupplyAttachmentDto> attachmentsDto = new ArrayList<>();
+        for (SupplyAttachmentEntity attachmentEntity : supplyEntity.getAttachments()) {
+            SupplyAttachmentDto attachmentDto = new SupplyAttachmentDto();
+            attachmentDto.setCreatedAt(attachmentEntity.getCreatedAt());
+            attachmentDto.setId(attachmentEntity.getId());
+            attachmentDto.setData(attachmentEntity.getData());
+            SupplyAttachmentTypeEntity attachmentTypeEntity = attachmentEntity.getAttachmentType();
+            attachmentDto.setAttachmentType(
+                    new SupplyAttachmentTypeDto(attachmentTypeEntity.getId(), attachmentTypeEntity.getName()));
+            attachmentsDto.add(attachmentDto);
+        }
+        supplyDto.setAttachments(attachmentsDto);
+
+        return supplyDto;
+    }
 
 }

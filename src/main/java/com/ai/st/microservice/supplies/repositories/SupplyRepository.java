@@ -11,11 +11,13 @@ import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 
 public interface SupplyRepository extends PagingAndSortingRepository<SupplyEntity, Long> {
 
-	List<SupplyEntity> findByMunicipalityCodeAndStateIn(String municipalityCode, List<SupplyStateEntity> states);
+    List<SupplyEntity> findByMunicipalityCodeAndStateIn(String municipalityCode, List<SupplyStateEntity> states);
 
-	Page<SupplyEntity> findByMunicipalityCodeAndStateIn(String municipalityCode, List<SupplyStateEntity> states, Pageable pageable);
+    Page<SupplyEntity> findByMunicipalityCodeAndStateInAndManagerCode(String municipalityCode, List<SupplyStateEntity> states, Long managerCode, Pageable pageable);
 
-	Page<SupplyEntity> findByMunicipalityCodeAndRequestCodeInAndStateIn(String municipalityCode, List<Long> requests, List<SupplyStateEntity> states,
-			Pageable pageable);
+    Page<SupplyEntity> findByMunicipalityCodeAndRequestCodeInAndStateIn(String municipalityCode, List<Long> requests, List<SupplyStateEntity> states,
+                                                                        Pageable pageable);
+
+    List<SupplyEntity> findByManagerCodeAndModelVersionIsNotNullAndMunicipalityCode(Long managerCode, String municipalityCode);
 
 }
