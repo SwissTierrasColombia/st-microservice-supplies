@@ -56,8 +56,8 @@ public class SupplyEntity {
     @Column(name = "manager_code", nullable = false)
     private Long managerCode;
 
-    @Column(name = "has_geometry_validation")
-    private Boolean hasGeometryValidation;
+    @Column(name = "is_valid")
+    private Boolean isValid;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
     private List<SupplyAttachmentEntity> attachments = new ArrayList<>();
@@ -165,11 +165,11 @@ public class SupplyEntity {
         this.managerCode = managerCode;
     }
 
-    public Boolean getHasGeometryValidation() {
-        return hasGeometryValidation;
+    public Boolean getValid() {
+        return isValid;
     }
 
-    public void setHasGeometryValidation(Boolean hasGeometryValidation) {
-        this.hasGeometryValidation = hasGeometryValidation;
+    public void setValid(Boolean valid) {
+        isValid = valid;
     }
 }

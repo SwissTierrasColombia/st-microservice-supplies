@@ -89,7 +89,7 @@ public class SupplyV1Controller {
                     requestCreateSupply.getTypeSupplyCode(), managerCode, requestCreateSupply.getRequestCode(),
                     requestCreateSupply.getAttachments(), owners, requestCreateSupply.getModelVersion(),
                     requestCreateSupply.getSupplyStateId(), requestCreateSupply.getName(),
-                    requestCreateSupply.getHasGeometryValidation());
+                    requestCreateSupply.getValid());
             httpStatus = HttpStatus.CREATED;
 
         } catch (InputValidationException e) {
