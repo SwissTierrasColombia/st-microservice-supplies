@@ -10,10 +10,10 @@ public class CreateSupplyAttachmentDto implements Serializable {
 
 	private static final long serialVersionUID = 335203584412319641L;
 
-	@ApiModelProperty(required = false, notes = "Data")
+	@ApiModelProperty(notes = "Data")
 	private String data;
 
-	@ApiModelProperty(required = false, notes = "Attachment Type ID")
+	@ApiModelProperty(notes = "Attachment Type ID")
 	private Long attachmentTypeId;
 
 	public CreateSupplyAttachmentDto() {
