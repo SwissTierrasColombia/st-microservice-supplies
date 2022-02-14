@@ -13,7 +13,7 @@
 
 	<groupId>com.ai.st.microservice.supplies</groupId>
 	<artifactId>st-microservice-supplies</artifactId>
-	<version>1.6.8</version>
+	<version>1.6.9</version>
 	<name>st-microservice-supplies</name>
 	<description>Microservice Supplies</description>
 
