@@ -66,4 +66,15 @@ public class DataPaginatedDto implements Serializable {
         this.size = size;
     }
 
+    @Override
+    public String toString() {
+        return "DataPaginatedDto{" +
+                "number=" + number +
+                ", numberOfElements=" + numberOfElements +
+                ", totalElements=" + totalElements +
+                ", totalPages=" + totalPages +
+                ", size=" + size +
+                ", items=" + items +
+                '}';
+    }
 }

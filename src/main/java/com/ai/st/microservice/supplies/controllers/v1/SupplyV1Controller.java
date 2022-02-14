@@ -102,6 +102,7 @@ public class SupplyV1Controller {
             responseDto = new ErrorDto(e.getMessage(), 2);
         } catch (Exception e) {
             log.error("Error SupplyV1Controller@createSupply#General ---> " + e.getMessage());
+            e.printStackTrace();
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             responseDto = new ErrorDto(e.getMessage(), 3);
         }
