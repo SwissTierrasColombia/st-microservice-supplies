@@ -4,6 +4,7 @@ import com.ai.st.microservice.supplies.clients.ManagerFeignClient;
 import com.ai.st.microservice.supplies.dto.managers.MicroserviceManagerDto;
 import com.ai.st.microservice.supplies.dto.managers.MicroserviceManagerProfileDto;
 
+import com.ai.st.microservice.supplies.services.tracing.SCMTracing;
 import feign.FeignException;
 
 import org.slf4j.Logger;
@@ -21,47 +22,17 @@ public class ManagerBusiness {
     @Autowired
     private ManagerFeignClient managerClient;
 
-    public MicroserviceManagerDto getManagerById(Long managerId) {
-        MicroserviceManagerDto managerDto = null;
-        try {
-            managerDto = managerClient.findById(managerId);
-        } catch (Exception e) {
-            log.error("No se ha podido consultar el gestor: " + e.getMessage());
-        }
-        return managerDto;
-    }
-
     public MicroserviceManagerDto getManagerByUserCode(Long userCode) {
         MicroserviceManagerDto managerDto = null;
         try {
             managerDto = managerClient.findByUserCode(userCode);
         } catch (Exception e) {
-            log.error("No se ha podido consultar el gestor: " + e.getMessage());
+            String messageError = String.format("Error consultando gestor por el usuario %d : %s", userCode,
+                    e.getMessage());
+            SCMTracing.sendError(messageError);
+            log.error(messageError);
         }
         return managerDto;
-    }
-
-    public boolean userManagerIsDirector(Long userCode) {
-
-        Boolean isDirector = false;
-
-        try {
-
-            List<MicroserviceManagerProfileDto> managerProfiles = managerClient.findProfilesByUser(userCode);
-
-            MicroserviceManagerProfileDto profileDirector = managerProfiles.stream()
-                    .filter(profileDto -> profileDto.getId().equals(RoleBusiness.SUB_ROLE_DIRECTOR)).findAny()
-                    .orElse(null);
-
-            if (profileDirector instanceof MicroserviceManagerProfileDto) {
-                isDirector = true;
-            }
-
-        } catch (FeignException e) {
-            log.error("No se ha podido verificar si el usuario es un director(gestor): " + e.getMessage());
-        }
-
-        return isDirector;
     }
 
 }
