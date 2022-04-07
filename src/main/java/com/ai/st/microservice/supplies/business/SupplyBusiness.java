@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ai.st.microservice.supplies.services.tracing.SCMTracing;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -300,6 +301,9 @@ public class SupplyBusiness {
             supplyService.deleteSupplyById(supplyId);
 
         } catch (Exception e) {
+            String messageError = String.format("Error eliminando el insumo %d: %s", supplyId, e.getMessage());
+            SCMTracing.sendError(messageError);
+            log.error(messageError);
             throw new BusinessException("No se ha podido eliminar el insumo.");
         }
 

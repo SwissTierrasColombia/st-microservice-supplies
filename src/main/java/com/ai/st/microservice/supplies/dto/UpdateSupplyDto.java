@@ -25,4 +25,8 @@ public class UpdateSupplyDto implements Serializable {
         this.stateId = stateId;
     }
 
+    @Override
+    public String toString() {
+        return "UpdateSupplyDto{" + "stateId=" + stateId + '}';
+    }
 }

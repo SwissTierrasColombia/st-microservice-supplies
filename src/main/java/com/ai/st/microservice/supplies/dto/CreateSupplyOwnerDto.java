@@ -36,4 +36,8 @@ public class CreateSupplyOwnerDto implements Serializable {
         this.ownerCode = ownerCode;
     }
 
+    @Override
+    public String toString() {
+        return "CreateSupplyOwnerDto{" + "ownerType='" + ownerType + '\'' + ", ownerCode=" + ownerCode + '}';
+    }
 }

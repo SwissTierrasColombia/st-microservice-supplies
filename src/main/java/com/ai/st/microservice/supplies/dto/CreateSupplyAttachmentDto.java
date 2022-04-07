@@ -36,4 +36,8 @@ public class CreateSupplyAttachmentDto implements Serializable {
         this.attachmentTypeId = attachmentTypeId;
     }
 
+    @Override
+    public String toString() {
+        return "CreateSupplyAttachmentDto{" + "data='" + data + '\'' + ", attachmentTypeId=" + attachmentTypeId + '}';
+    }
 }

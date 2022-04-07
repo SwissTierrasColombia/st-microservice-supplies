@@ -137,4 +137,13 @@ public class CreateSupplyDto implements Serializable {
     public void setValid(Boolean valid) {
         isValid = valid;
     }
+
+    @Override
+    public String toString() {
+        return "CreateSupplyDto{" + "municipalityCode='" + municipalityCode + '\'' + ", name='" + name + '\''
+                + ", observations='" + observations + '\'' + ", typeSupplyCode=" + typeSupplyCode + ", requestCode="
+                + requestCode + ", managerCode=" + managerCode + ", modelVersion='" + modelVersion + '\''
+                + ", supplyStateId=" + supplyStateId + ", owners=" + owners + ", attachments=" + attachments
+                + ", isValid=" + isValid + '}';
+    }
 }
