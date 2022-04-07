@@ -45,9 +45,10 @@ public class SupplyBusiness {
 
     private final Logger log = LoggerFactory.getLogger(SupplyBusiness.class);
 
-    public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode, Long managerCode,
-                                             Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
-                                             String modelVersion, Long supplyStateId, String name, Boolean isValid) throws BusinessException {
+    public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
+            Long managerCode, Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments,
+            List<CreateSupplyOwnerDto> owners, String modelVersion, Long supplyStateId, String name, Boolean isValid)
+            throws BusinessException {
 
         log.info("Add supply to municipality started");
 
@@ -58,12 +59,14 @@ public class SupplyBusiness {
 
         final String supplyAttachmentsString = StringUtils.join(supplyAttachments.stream()
                 .map(CreateSupplyAttachmentDto::getAttachmentTypeId).collect(Collectors.toList()), ",");
-        final String ownersString = StringUtils.join(owners.stream()
-                .map(CreateSupplyOwnerDto::getOwnerCode).collect(Collectors.toList()), ",");
+        final String ownersString = StringUtils
+                .join(owners.stream().map(CreateSupplyOwnerDto::getOwnerCode).collect(Collectors.toList()), ",");
 
-        log.info(String.format("Params: municipality=%s observations=%s typeSupplyCode=%d managerCode=%d requestCode=%d supplyAttachments=%s " +
-                        "owners=%s modelVersion=%s supplyStateId=%d name=%s isValid=%s", municipalityCode, observations, typeSupplyCode, managerCode,
-                requestCode, supplyAttachmentsString, ownersString, modelVersion, supplyStateId, name, isValid));
+        log.info(String.format(
+                "Params: municipality=%s observations=%s typeSupplyCode=%d managerCode=%d requestCode=%d supplyAttachments=%s "
+                        + "owners=%s modelVersion=%s supplyStateId=%d name=%s isValid=%s",
+                municipalityCode, observations, typeSupplyCode, managerCode, requestCode, supplyAttachmentsString,
+                ownersString, modelVersion, supplyStateId, name, isValid));
 
         if (supplyAttachments.size() == 0) {
             throw new BusinessException("El insumo debe contener al menos un adjunto.");
@@ -184,7 +187,7 @@ public class SupplyBusiness {
     }
 
     public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests,
-                                            List<Long> states, Long managerCode) throws BusinessException {
+            List<Long> states, Long managerCode) throws BusinessException {
 
         log.info("Get supplies by municipality business started");
 
@@ -217,30 +220,33 @@ public class SupplyBusiness {
             }
         }
 
-        final String statesStringId = StringUtils.join(statesEntity.stream()
-                .map(SupplyStateEntity::getId).collect(Collectors.toList()), ",");
+        final String statesStringId = StringUtils
+                .join(statesEntity.stream().map(SupplyStateEntity::getId).collect(Collectors.toList()), ",");
 
         if (page == null) {
 
-            log.info(String.format("Filter without pagination: municipality=%s states=%s", municipalityCode, statesStringId));
+            log.info(String.format("Filter without pagination: municipality=%s states=%s", municipalityCode,
+                    statesStringId));
             suppliesEntity = supplyService.getSuppliesByMunicipalityCodeAndStates(municipalityCode, statesEntity);
 
         } else {
 
             if (requests != null && requests.size() > 0) {
 
-                log.info(String.format("Filter with pagination and requests: municipality=%s requests=%s states=%s page=%d perPage=%d",
+                log.info(String.format(
+                        "Filter with pagination and requests: municipality=%s requests=%s states=%s page=%d perPage=%d",
                         municipalityCode, StringUtils.join(requests, ","), statesStringId, page, 10));
 
                 pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(municipalityCode,
                         requests, statesEntity, page - 1, 10);
             } else {
 
-                log.info(String.format("Filter with pagination but without requests: municipality=%s managerCode=%d states=%s page=%d perPage=%d",
+                log.info(String.format(
+                        "Filter with pagination but without requests: municipality=%s managerCode=%d states=%s page=%d perPage=%d",
                         municipalityCode, managerCode, statesStringId, page - 1, 10));
 
-                pageEntity = supplyService.getSuppliesByMunicipalityCodeAndStatesPaginated(municipalityCode, managerCode,
-                        statesEntity, page - 1, 10);
+                pageEntity = supplyService.getSuppliesByMunicipalityCodeAndStatesPaginated(municipalityCode,
+                        managerCode, statesEntity, page - 1, 10);
             }
 
             suppliesEntity = pageEntity.toList();

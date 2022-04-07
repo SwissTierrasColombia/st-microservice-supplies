@@ -2,11 +2,11 @@ package com.ai.st.microservice.supplies.entities;
 
 public enum OwnerTypeEnum {
 
-	ENTITY_PROVIDER,
+    ENTITY_PROVIDER,
 
-	ENTITY_MANAGER,
+    ENTITY_MANAGER,
 
-	USER,
+    USER,
 
-	CADASTRAL_AUTHORITY
+    CADASTRAL_AUTHORITY
 }

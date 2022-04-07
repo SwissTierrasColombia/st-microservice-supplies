@@ -15,12 +15,11 @@ public interface ISupplyService {
 
     SupplyEntity getSupplyById(Long id);
 
-    Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode,
-                                                                       Long managerCode,
-                                                                       List<SupplyStateEntity> states, int page, int numberItems);
+    Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode, Long managerCode,
+            List<SupplyStateEntity> states, int page, int numberItems);
 
     Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(String municipalityCode,
-                                                                                  List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems);
+            List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems);
 
     void deleteSupplyById(Long id);
 

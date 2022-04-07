@@ -4,10 +4,10 @@ import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 
 public interface ISupplyStateService {
 
-	public Long getCount();
+    public Long getCount();
 
-	public SupplyStateEntity createSupplyState(SupplyStateEntity supplyStateEntity);
+    public SupplyStateEntity createSupplyState(SupplyStateEntity supplyStateEntity);
 
-	public SupplyStateEntity getSupplyStateById(Long id);
+    public SupplyStateEntity getSupplyStateById(Long id);
 
 }

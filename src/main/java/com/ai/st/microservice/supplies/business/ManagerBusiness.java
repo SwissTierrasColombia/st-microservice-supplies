@@ -41,7 +41,6 @@ public class ManagerBusiness {
         return managerDto;
     }
 
-
     public boolean userManagerIsDirector(Long userCode) {
 
         Boolean isDirector = false;

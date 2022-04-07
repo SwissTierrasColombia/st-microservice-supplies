@@ -13,11 +13,13 @@ public interface SupplyRepository extends PagingAndSortingRepository<SupplyEntit
 
     List<SupplyEntity> findByMunicipalityCodeAndStateIn(String municipalityCode, List<SupplyStateEntity> states);
 
-    Page<SupplyEntity> findByMunicipalityCodeAndStateInAndManagerCode(String municipalityCode, List<SupplyStateEntity> states, Long managerCode, Pageable pageable);
+    Page<SupplyEntity> findByMunicipalityCodeAndStateInAndManagerCode(String municipalityCode,
+            List<SupplyStateEntity> states, Long managerCode, Pageable pageable);
 
-    Page<SupplyEntity> findByMunicipalityCodeAndRequestCodeInAndStateIn(String municipalityCode, List<Long> requests, List<SupplyStateEntity> states,
-                                                                        Pageable pageable);
+    Page<SupplyEntity> findByMunicipalityCodeAndRequestCodeInAndStateIn(String municipalityCode, List<Long> requests,
+            List<SupplyStateEntity> states, Pageable pageable);
 
-    List<SupplyEntity> findByManagerCodeAndModelVersionIsNotNullAndMunicipalityCode(Long managerCode, String municipalityCode);
+    List<SupplyEntity> findByManagerCodeAndModelVersionIsNotNullAndMunicipalityCode(Long managerCode,
+            String municipalityCode);
 
 }

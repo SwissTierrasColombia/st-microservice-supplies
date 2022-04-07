@@ -2,6 +2,7 @@ package com.ai.st.microservice.supplies.controllers.v1;
 
 import java.util.List;
 
+import com.ai.st.microservice.common.dto.general.BasicResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ai.st.microservice.supplies.business.SupplyBusiness;
 import com.ai.st.microservice.supplies.dto.CreateSupplyDto;
 import com.ai.st.microservice.supplies.dto.CreateSupplyOwnerDto;
-import com.ai.st.microservice.supplies.dto.ErrorDto;
 import com.ai.st.microservice.supplies.dto.SupplyDto;
 import com.ai.st.microservice.supplies.dto.UpdateSupplyDto;
 import com.ai.st.microservice.supplies.exceptions.BusinessException;
@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Api(value = "Manage Supplies", description = "Manage Supplies", tags = {"Supplies"})
+@Api(value = "Manage Supplies", description = "Manage Supplies", tags = { "Supplies" })
 @RestController
 @RequestMapping("api/supplies/v1/supplies")
 public class SupplyV1Controller {
@@ -42,8 +42,8 @@ public class SupplyV1Controller {
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create Supply")
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "Create supply", response = SupplyDto.class),
-            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Create supply", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class) })
     @ResponseBody
     public ResponseEntity<Object> createSupply(@RequestBody CreateSupplyDto requestCreateSupply) {
 
@@ -95,16 +95,16 @@ public class SupplyV1Controller {
         } catch (InputValidationException e) {
             log.error("Error SupplyV1Controller@createSupply#Validation ---> " + e.getMessage());
             httpStatus = HttpStatus.BAD_REQUEST;
-            responseDto = new ErrorDto(e.getMessage(), 1);
+            responseDto = new BasicResponseDto(e.getMessage(), 1);
         } catch (BusinessException e) {
             log.error("Error SupplyV1Controller@createSupply#Business ---> " + e.getMessage());
             httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-            responseDto = new ErrorDto(e.getMessage(), 2);
+            responseDto = new BasicResponseDto(e.getMessage(), 2);
         } catch (Exception e) {
             log.error("Error SupplyV1Controller@createSupply#General ---> " + e.getMessage());
             e.printStackTrace();
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            responseDto = new ErrorDto(e.getMessage(), 3);
+            responseDto = new BasicResponseDto(e.getMessage(), 3);
         }
 
         return new ResponseEntity<>(responseDto, httpStatus);
@@ -114,13 +114,13 @@ public class SupplyV1Controller {
     @ApiOperation(value = "Get supplies by municipality")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Get supplies", response = SupplyDto.class, responseContainer = "List"),
-            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+            @ApiResponse(code = 500, message = "Error Server", response = String.class) })
     @ResponseBody
     public ResponseEntity<?> getSuppliesByMunicipality(@PathVariable String municipalityId,
-                                                       @RequestParam(name = "page", required = false) Integer page,
-                                                       @RequestParam(name = "manager", required = false) Long managerCode,
-                                                       @RequestParam(name = "requests", required = false) List<Long> requests,
-                                                       @RequestParam(name = "states", required = false) List<Long> states) {
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "manager", required = false) Long managerCode,
+            @RequestParam(name = "requests", required = false) List<Long> requests,
+            @RequestParam(name = "states", required = false) List<Long> states) {
 
         HttpStatus httpStatus;
         Object responseDto;
@@ -131,11 +131,11 @@ public class SupplyV1Controller {
         } catch (BusinessException e) {
             log.error("Error SupplyV1Controller@getSuppliesByMunicipality#Business ---> " + e.getMessage());
             httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-            responseDto = new ErrorDto(e.getMessage(), 2);
+            responseDto = new BasicResponseDto(e.getMessage(), 2);
         } catch (Exception e) {
             log.error("Error SupplyV1Controller@getSuppliesByMunicipality#General ---> " + e.getMessage());
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            responseDto = new ErrorDto(e.getMessage(), 3);
+            responseDto = new BasicResponseDto(e.getMessage(), 3);
         }
 
         return new ResponseEntity<>(responseDto, httpStatus);
@@ -143,8 +143,8 @@ public class SupplyV1Controller {
 
     @RequestMapping(value = "{supplyId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get supply by id")
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "Get supply", response = SupplyDto.class),
-            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Get supply", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class) })
     @ResponseBody
     public ResponseEntity<?> getSupplyById(@PathVariable Long supplyId) {
 
@@ -159,11 +159,11 @@ public class SupplyV1Controller {
         } catch (BusinessException e) {
             log.error("Error SupplyV1Controller@getSupplyById#Business ---> " + e.getMessage());
             httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-            responseDto = new ErrorDto(e.getMessage(), 2);
+            responseDto = new BasicResponseDto(e.getMessage(), 2);
         } catch (Exception e) {
             log.error("Error SupplyV1Controller@getSupplyById#General ---> " + e.getMessage());
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            responseDto = new ErrorDto(e.getMessage(), 3);
+            responseDto = new BasicResponseDto(e.getMessage(), 3);
         }
 
         return new ResponseEntity<>(responseDto, httpStatus);
@@ -171,8 +171,8 @@ public class SupplyV1Controller {
 
     @RequestMapping(value = "{supplyId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Delete supply by id")
-    @ApiResponses(value = {@ApiResponse(code = 204, message = "Supply deleted", response = SupplyDto.class),
-            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ApiResponses(value = { @ApiResponse(code = 204, message = "Supply deleted", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class) })
     @ResponseBody
     public ResponseEntity<?> deleteSupplyById(@PathVariable Long supplyId) {
 
@@ -183,17 +183,17 @@ public class SupplyV1Controller {
 
             supplyBusiness.deleteSupplyById(supplyId);
 
-            responseDto = new ErrorDto("Se ha eliminado el insumo", 7);
+            responseDto = new BasicResponseDto("Se ha eliminado el insumo", 7);
             httpStatus = HttpStatus.NO_CONTENT;
 
         } catch (BusinessException e) {
             log.error("Error SupplyV1Controller@deleteSupplyById#Business ---> " + e.getMessage());
             httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-            responseDto = new ErrorDto(e.getMessage(), 2);
+            responseDto = new BasicResponseDto(e.getMessage(), 2);
         } catch (Exception e) {
             log.error("Error SupplyV1Controller@deleteSupplyById#General ---> " + e.getMessage());
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            responseDto = new ErrorDto(e.getMessage(), 3);
+            responseDto = new BasicResponseDto(e.getMessage(), 3);
         }
 
         return new ResponseEntity<>(responseDto, httpStatus);
@@ -201,8 +201,8 @@ public class SupplyV1Controller {
 
     @RequestMapping(value = "{supplyId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update supply by id")
-    @ApiResponses(value = {@ApiResponse(code = 204, message = "Supply upated", response = SupplyDto.class),
-            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+    @ApiResponses(value = { @ApiResponse(code = 204, message = "Supply upated", response = SupplyDto.class),
+            @ApiResponse(code = 500, message = "Error Server", response = String.class) })
     @ResponseBody
     public ResponseEntity<?> updateSupply(@PathVariable Long supplyId, @RequestBody UpdateSupplyDto updateSupplyDto) {
 
@@ -217,11 +217,11 @@ public class SupplyV1Controller {
         } catch (BusinessException e) {
             log.error("Error SupplyV1Controller@updateSupply#Business ---> " + e.getMessage());
             httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
-            responseDto = new ErrorDto(e.getMessage(), 2);
+            responseDto = new BasicResponseDto(e.getMessage(), 2);
         } catch (Exception e) {
             log.error("Error SupplyV1Controller@updateSupply#General ---> " + e.getMessage());
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            responseDto = new ErrorDto(e.getMessage(), 3);
+            responseDto = new BasicResponseDto(e.getMessage(), 3);
         }
 
         return new ResponseEntity<>(responseDto, httpStatus);

@@ -13,28 +13,28 @@ import com.ai.st.microservice.supplies.repositories.SupplyAttachmentTypeReposito
 @Service
 public class SupplyAttachmentTypeService implements ISupplyAttachmentTypeService {
 
-	@Autowired
-	private SupplyAttachmentTypeRepository attachmentTypeRepository;
+    @Autowired
+    private SupplyAttachmentTypeRepository attachmentTypeRepository;
 
-	@Override
-	@Transactional
-	public SupplyAttachmentTypeEntity createAttachmentType(SupplyAttachmentTypeEntity entity) {
-		return attachmentTypeRepository.save(entity);
-	}
+    @Override
+    @Transactional
+    public SupplyAttachmentTypeEntity createAttachmentType(SupplyAttachmentTypeEntity entity) {
+        return attachmentTypeRepository.save(entity);
+    }
 
-	@Override
-	public SupplyAttachmentTypeEntity getAttachmentTypeById(Long id) {
-		return attachmentTypeRepository.findById(id).orElse(null);
-	}
+    @Override
+    public SupplyAttachmentTypeEntity getAttachmentTypeById(Long id) {
+        return attachmentTypeRepository.findById(id).orElse(null);
+    }
 
-	@Override
-	public Long getCount() {
-		return attachmentTypeRepository.count();
-	}
+    @Override
+    public Long getCount() {
+        return attachmentTypeRepository.count();
+    }
 
-	@Override
-	public List<SupplyAttachmentTypeEntity> getSupplyAttachmentsTypes() {
-		return attachmentTypeRepository.findAll();
-	}
+    @Override
+    public List<SupplyAttachmentTypeEntity> getSupplyAttachmentsTypes() {
+        return attachmentTypeRepository.findAll();
+    }
 
 }

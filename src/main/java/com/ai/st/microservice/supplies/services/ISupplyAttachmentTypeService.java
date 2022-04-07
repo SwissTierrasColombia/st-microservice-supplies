@@ -6,12 +6,12 @@ import com.ai.st.microservice.supplies.entities.SupplyAttachmentTypeEntity;
 
 public interface ISupplyAttachmentTypeService {
 
-	public SupplyAttachmentTypeEntity createAttachmentType(SupplyAttachmentTypeEntity entity);
+    public SupplyAttachmentTypeEntity createAttachmentType(SupplyAttachmentTypeEntity entity);
 
-	public SupplyAttachmentTypeEntity getAttachmentTypeById(Long id);
+    public SupplyAttachmentTypeEntity getAttachmentTypeById(Long id);
 
-	public Long getCount();
-	
-	public List<SupplyAttachmentTypeEntity> getSupplyAttachmentsTypes();
+    public Long getCount();
+
+    public List<SupplyAttachmentTypeEntity> getSupplyAttachmentsTypes();
 
 }

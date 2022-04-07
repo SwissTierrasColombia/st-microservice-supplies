@@ -1,5 +1,6 @@
 package com.ai.st.microservice.supplies.controllers.v2;
 
+import com.ai.st.microservice.common.dto.general.BasicResponseDto;
 import com.ai.st.microservice.supplies.business.ManagerBusiness;
 import com.ai.st.microservice.supplies.business.SupplyBusiness;
 import com.ai.st.microservice.supplies.business.UserBusiness;
@@ -20,7 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api(value = "Manage Supplies", tags = {"Supplies"})
+@Api(value = "Manage Supplies", tags = { "Supplies" })
 @RestController
 @RequestMapping("api/supplies/v2/supplies")
 public class SupplyV2Controller {
@@ -40,10 +41,10 @@ public class SupplyV2Controller {
     @ApiOperation(value = "Get supplies by municipality")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Get supplies", response = SupplyDto.class, responseContainer = "List"),
-            @ApiResponse(code = 500, message = "Error Server", response = String.class)})
+            @ApiResponse(code = 500, message = "Error Server", response = String.class) })
     @ResponseBody
     public ResponseEntity<?> getSuppliesXTFByMunicipality(@PathVariable String municipalityCode,
-                                                          @RequestHeader("authorization") String headerAuthorization) {
+            @RequestHeader("authorization") String headerAuthorization) {
 
         HttpStatus httpStatus;
         Object responseDto;
@@ -68,11 +69,11 @@ public class SupplyV2Controller {
         } catch (FeignMicroserviceException e) {
             log.error("Error SupplyV2Controller@getSuppliesXTFByMunicipality#Microservice ---> " + e.getMessage());
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            responseDto = new ErrorDto(e.getMessage(), 2);
+            responseDto = new BasicResponseDto(e.getMessage(), 2);
         } catch (Exception e) {
             log.error("Error SupplyV2Controller@getSuppliesXTFByMunicipality#General ---> " + e.getMessage());
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            responseDto = new ErrorDto(e.getMessage(), 3);
+            responseDto = new BasicResponseDto(e.getMessage(), 3);
         }
 
         return new ResponseEntity<>(responseDto, httpStatus);
