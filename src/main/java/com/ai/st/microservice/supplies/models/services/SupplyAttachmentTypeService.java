@@ -1,4 +1,4 @@
-package com.ai.st.microservice.supplies.services;
+package com.ai.st.microservice.supplies.models.services;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ai.st.microservice.supplies.entities.SupplyAttachmentTypeEntity;
-import com.ai.st.microservice.supplies.repositories.SupplyAttachmentTypeRepository;
+import com.ai.st.microservice.supplies.models.repositories.SupplyAttachmentTypeRepository;
 
 @Service
 public class SupplyAttachmentTypeService implements ISupplyAttachmentTypeService {

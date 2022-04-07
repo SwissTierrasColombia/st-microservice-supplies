@@ -28,9 +28,9 @@ import com.ai.st.microservice.supplies.entities.SupplyEntity;
 import com.ai.st.microservice.supplies.entities.SupplyOwnerEntity;
 import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 import com.ai.st.microservice.supplies.exceptions.BusinessException;
-import com.ai.st.microservice.supplies.services.ISupplyAttachmentTypeService;
-import com.ai.st.microservice.supplies.services.ISupplyService;
-import com.ai.st.microservice.supplies.services.ISupplyStateService;
+import com.ai.st.microservice.supplies.models.services.ISupplyAttachmentTypeService;
+import com.ai.st.microservice.supplies.models.services.ISupplyService;
+import com.ai.st.microservice.supplies.models.services.ISupplyStateService;
 
 @Component
 public class SupplyBusiness {

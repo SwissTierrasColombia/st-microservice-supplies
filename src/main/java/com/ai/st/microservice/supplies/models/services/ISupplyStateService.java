@@ -1,4 +1,4 @@
-package com.ai.st.microservice.supplies.services;
+package com.ai.st.microservice.supplies.models.services;
 
 import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 

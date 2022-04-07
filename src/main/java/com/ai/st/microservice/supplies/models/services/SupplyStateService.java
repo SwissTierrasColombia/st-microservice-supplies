@@ -1,4 +1,4 @@
-package com.ai.st.microservice.supplies.services;
+package com.ai.st.microservice.supplies.models.services;
 
 import javax.transaction.Transactional;
 
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
-import com.ai.st.microservice.supplies.repositories.SupplyStateRepository;
+import com.ai.st.microservice.supplies.models.repositories.SupplyStateRepository;
 
 @Service
 public class SupplyStateService implements ISupplyStateService {

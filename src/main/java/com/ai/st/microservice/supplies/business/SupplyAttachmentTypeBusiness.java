@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.ai.st.microservice.supplies.dto.SupplyAttachmentTypeDto;
 import com.ai.st.microservice.supplies.entities.SupplyAttachmentTypeEntity;
 import com.ai.st.microservice.supplies.exceptions.BusinessException;
-import com.ai.st.microservice.supplies.services.ISupplyAttachmentTypeService;
+import com.ai.st.microservice.supplies.models.services.ISupplyAttachmentTypeService;
 
 @Component
 public class SupplyAttachmentTypeBusiness {

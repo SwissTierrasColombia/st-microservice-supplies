@@ -1,4 +1,4 @@
-package com.ai.st.microservice.supplies.services;
+package com.ai.st.microservice.supplies.models.services;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ai.st.microservice.supplies.entities.SupplyEntity;
 import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
-import com.ai.st.microservice.supplies.repositories.SupplyRepository;
+import com.ai.st.microservice.supplies.models.repositories.SupplyRepository;
 
 @Service
 public class SupplyService implements ISupplyService {
