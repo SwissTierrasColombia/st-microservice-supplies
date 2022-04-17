@@ -13,7 +13,7 @@
 
 	<groupId>com.ai.st.microservice.supplies</groupId>
 	<artifactId>st-microservice-supplies</artifactId>
-	<version>1.6.9</version>
+	<version>1.8.0</version>
 	<name>st-microservice-supplies</name>
 	<description>Microservice Supplies</description>
 
@@ -107,6 +107,14 @@
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-api</artifactId>
 			<version>7.5.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.newrelic.agent.java</groupId>
+			<artifactId>newrelic-agent</artifactId>
+			<version>7.5.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
