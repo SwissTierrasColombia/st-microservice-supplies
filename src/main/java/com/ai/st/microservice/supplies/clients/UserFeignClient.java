@@ -21,7 +21,6 @@ public interface UserFeignClient {
     @GetMapping("/api/administration/v1/users/token")
     MicroserviceUserDto findByToken(@RequestParam(name = "token") String token);
 
-
     class Configuration {
 
         @Bean

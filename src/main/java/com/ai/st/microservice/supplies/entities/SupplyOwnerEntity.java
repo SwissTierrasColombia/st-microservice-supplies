@@ -20,68 +20,68 @@ import javax.persistence.TemporalType;
 @Table(name = "supplies_owners", schema = "supplies")
 public class SupplyOwnerEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-	@Column(name = "created_at", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdAt;
+    @Column(name = "created_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
 
-	@Column(name = "owner_code", nullable = false)
-	private Long ownerCode;
+    @Column(name = "owner_code", nullable = false)
+    private Long ownerCode;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "supply_id", referencedColumnName = "id", nullable = false)
-	private SupplyEntity supply;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supply_id", referencedColumnName = "id", nullable = false)
+    private SupplyEntity supply;
 
-	@Column(name = "owner_type", nullable = false, length = 50)
-	@Enumerated(value = EnumType.STRING)
-	private OwnerTypeEnum ownerType;
+    @Column(name = "owner_type", nullable = false, length = 50)
+    @Enumerated(value = EnumType.STRING)
+    private OwnerTypeEnum ownerType;
 
-	public SupplyOwnerEntity() {
+    public SupplyOwnerEntity() {
 
-	}
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Date getCreatedAt() {
-		return createdAt;
-	}
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public Long getOwnerCode() {
-		return ownerCode;
-	}
+    public Long getOwnerCode() {
+        return ownerCode;
+    }
 
-	public void setOwnerCode(Long ownerCode) {
-		this.ownerCode = ownerCode;
-	}
+    public void setOwnerCode(Long ownerCode) {
+        this.ownerCode = ownerCode;
+    }
 
-	public SupplyEntity getSupply() {
-		return supply;
-	}
+    public SupplyEntity getSupply() {
+        return supply;
+    }
 
-	public void setSupply(SupplyEntity supply) {
-		this.supply = supply;
-	}
+    public void setSupply(SupplyEntity supply) {
+        this.supply = supply;
+    }
 
-	public OwnerTypeEnum getOwnerType() {
-		return ownerType;
-	}
+    public OwnerTypeEnum getOwnerType() {
+        return ownerType;
+    }
 
-	public void setOwnerType(OwnerTypeEnum ownerType) {
-		this.ownerType = ownerType;
-	}
+    public void setOwnerType(OwnerTypeEnum ownerType) {
+        this.ownerType = ownerType;
+    }
 
 }

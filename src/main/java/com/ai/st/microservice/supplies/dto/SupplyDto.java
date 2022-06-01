@@ -163,20 +163,10 @@ public class SupplyDto implements Serializable {
 
     @Override
     public String toString() {
-        return "SupplyDto{" +
-                "id=" + id +
-                ", createdAt=" + createdAt +
-                ", state=" + state +
-                ", municipalityCode='" + municipalityCode + '\'' +
-                ", name='" + name + '\'' +
-                ", observations='" + observations + '\'' +
-                ", typeSupplyCode=" + typeSupplyCode +
-                ", requestCode=" + requestCode +
-                ", managerCode=" + managerCode +
-                ", modelVersion='" + modelVersion + '\'' +
-                ", owners=" + owners +
-                ", attachments=" + attachments +
-                ", isValid=" + isValid +
-                '}';
+        return "SupplyDto{" + "id=" + id + ", createdAt=" + createdAt + ", state=" + state + ", municipalityCode='"
+                + municipalityCode + '\'' + ", name='" + name + '\'' + ", observations='" + observations + '\''
+                + ", typeSupplyCode=" + typeSupplyCode + ", requestCode=" + requestCode + ", managerCode=" + managerCode
+                + ", modelVersion='" + modelVersion + '\'' + ", owners=" + owners + ", attachments=" + attachments
+                + ", isValid=" + isValid + '}';
     }
 }

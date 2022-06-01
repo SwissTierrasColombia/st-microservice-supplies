@@ -8,32 +8,36 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "CreateSupplyAttachmentDto")
 public class CreateSupplyAttachmentDto implements Serializable {
 
-	private static final long serialVersionUID = 335203584412319641L;
+    private static final long serialVersionUID = 335203584412319641L;
 
-	@ApiModelProperty(notes = "Data")
-	private String data;
+    @ApiModelProperty(notes = "Data")
+    private String data;
 
-	@ApiModelProperty(notes = "Attachment Type ID")
-	private Long attachmentTypeId;
+    @ApiModelProperty(notes = "Attachment Type ID")
+    private Long attachmentTypeId;
 
-	public CreateSupplyAttachmentDto() {
+    public CreateSupplyAttachmentDto() {
 
-	}
+    }
 
-	public String getData() {
-		return data;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 
-	public Long getAttachmentTypeId() {
-		return attachmentTypeId;
-	}
+    public Long getAttachmentTypeId() {
+        return attachmentTypeId;
+    }
 
-	public void setAttachmentTypeId(Long attachmentTypeId) {
-		this.attachmentTypeId = attachmentTypeId;
-	}
+    public void setAttachmentTypeId(Long attachmentTypeId) {
+        this.attachmentTypeId = attachmentTypeId;
+    }
 
+    @Override
+    public String toString() {
+        return "CreateSupplyAttachmentDto{" + "data='" + data + '\'' + ", attachmentTypeId=" + attachmentTypeId + '}';
+    }
 }

@@ -1,4 +1,4 @@
-package com.ai.st.microservice.supplies.services;
+package com.ai.st.microservice.supplies.models.services;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ai.st.microservice.supplies.entities.SupplyEntity;
 import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
-import com.ai.st.microservice.supplies.repositories.SupplyRepository;
+import com.ai.st.microservice.supplies.models.repositories.SupplyRepository;
 
 @Service
 public class SupplyService implements ISupplyService {
@@ -28,7 +28,7 @@ public class SupplyService implements ISupplyService {
 
     @Override
     public List<SupplyEntity> getSuppliesByMunicipalityCodeAndStates(String municipalityCode,
-                                                                     List<SupplyStateEntity> states) {
+            List<SupplyStateEntity> states) {
         return supplyRepository.findByMunicipalityCodeAndStateIn(municipalityCode, states);
     }
 
@@ -38,16 +38,16 @@ public class SupplyService implements ISupplyService {
     }
 
     @Override
-    public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode,
-                                                                              Long managerCode,
-                                                                              List<SupplyStateEntity> states, int page, int numberItems) {
+    public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndStatesPaginated(String municipalityCode, Long managerCode,
+            List<SupplyStateEntity> states, int page, int numberItems) {
         Pageable pageable = PageRequest.of(page, numberItems);
-        return supplyRepository.findByMunicipalityCodeAndStateInAndManagerCode(municipalityCode, states, managerCode, pageable);
+        return supplyRepository.findByMunicipalityCodeAndStateInAndManagerCode(municipalityCode, states, managerCode,
+                pageable);
     }
 
     @Override
     public Page<SupplyEntity> getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(String municipalityCode,
-                                                                                         List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems) {
+            List<Long> requests, List<SupplyStateEntity> states, int page, int numberItems) {
         Pageable pageable = PageRequest.of(page, numberItems);
         return supplyRepository.findByMunicipalityCodeAndRequestCodeInAndStateIn(municipalityCode, requests, states,
                 pageable);
@@ -61,7 +61,8 @@ public class SupplyService implements ISupplyService {
 
     @Override
     public List<SupplyEntity> getSuppliesXTFByManager(Long managerCode, String municipalityCode) {
-        return supplyRepository.findByManagerCodeAndModelVersionIsNotNullAndMunicipalityCode(managerCode, municipalityCode);
+        return supplyRepository.findByManagerCodeAndModelVersionIsNotNullAndMunicipalityCode(managerCode,
+                municipalityCode);
     }
 
 }
