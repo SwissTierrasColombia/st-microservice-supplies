@@ -42,8 +42,8 @@ public class CreateSupplyDto implements Serializable {
     @ApiModelProperty(notes = "Attachments")
     private List<CreateSupplyAttachmentDto> attachments;
 
-    @ApiModelProperty(notes = "Has geometry validation?")
-    private Boolean hasGeometryValidation;
+    @ApiModelProperty(notes = "xtf is valid?")
+    private Boolean isValid;
 
     public CreateSupplyDto() {
         this.owners = new ArrayList<>();
@@ -130,11 +130,20 @@ public class CreateSupplyDto implements Serializable {
         this.managerCode = managerCode;
     }
 
-    public Boolean getHasGeometryValidation() {
-        return hasGeometryValidation;
+    public Boolean getValid() {
+        return isValid;
     }
 
-    public void setHasGeometryValidation(Boolean hasGeometryValidation) {
-        this.hasGeometryValidation = hasGeometryValidation;
+    public void setValid(Boolean valid) {
+        isValid = valid;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateSupplyDto{" + "municipalityCode='" + municipalityCode + '\'' + ", name='" + name + '\''
+                + ", observations='" + observations + '\'' + ", typeSupplyCode=" + typeSupplyCode + ", requestCode="
+                + requestCode + ", managerCode=" + managerCode + ", modelVersion='" + modelVersion + '\''
+                + ", supplyStateId=" + supplyStateId + ", owners=" + owners + ", attachments=" + attachments
+                + ", isValid=" + isValid + '}';
     }
 }

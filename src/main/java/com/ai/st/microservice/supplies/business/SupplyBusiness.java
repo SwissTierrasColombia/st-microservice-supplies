@@ -3,7 +3,12 @@ package com.ai.st.microservice.supplies.business;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.ai.st.microservice.supplies.services.tracing.SCMTracing;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -23,9 +28,9 @@ import com.ai.st.microservice.supplies.entities.SupplyEntity;
 import com.ai.st.microservice.supplies.entities.SupplyOwnerEntity;
 import com.ai.st.microservice.supplies.entities.SupplyStateEntity;
 import com.ai.st.microservice.supplies.exceptions.BusinessException;
-import com.ai.st.microservice.supplies.services.ISupplyAttachmentTypeService;
-import com.ai.st.microservice.supplies.services.ISupplyService;
-import com.ai.st.microservice.supplies.services.ISupplyStateService;
+import com.ai.st.microservice.supplies.models.services.ISupplyAttachmentTypeService;
+import com.ai.st.microservice.supplies.models.services.ISupplyService;
+import com.ai.st.microservice.supplies.models.services.ISupplyStateService;
 
 @Component
 public class SupplyBusiness {
@@ -39,9 +44,30 @@ public class SupplyBusiness {
     @Autowired
     private ISupplyAttachmentTypeService attachmentTypeService;
 
-    public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode, Long managerCode,
-                                             Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments, List<CreateSupplyOwnerDto> owners,
-                                             String modelVersion, Long supplyStateId, String name, Boolean hasGeometryValidation) throws BusinessException {
+    private final Logger log = LoggerFactory.getLogger(SupplyBusiness.class);
+
+    public SupplyDto addSupplyToMunicipality(String municipalityCode, String observations, Long typeSupplyCode,
+            Long managerCode, Long requestCode, List<CreateSupplyAttachmentDto> supplyAttachments,
+            List<CreateSupplyOwnerDto> owners, String modelVersion, Long supplyStateId, String name, Boolean isValid)
+            throws BusinessException {
+
+        log.info("Add supply to municipality started");
+
+        for (CreateSupplyAttachmentDto attachment : supplyAttachments) {
+            System.out.println("attachment ID: " + attachment.getAttachmentTypeId());
+            System.out.println("attachment DATA: " + attachment.getData());
+        }
+
+        final String supplyAttachmentsString = StringUtils.join(supplyAttachments.stream()
+                .map(CreateSupplyAttachmentDto::getAttachmentTypeId).collect(Collectors.toList()), ",");
+        final String ownersString = StringUtils
+                .join(owners.stream().map(CreateSupplyOwnerDto::getOwnerCode).collect(Collectors.toList()), ",");
+
+        log.info(String.format(
+                "Params: municipality=%s observations=%s typeSupplyCode=%d managerCode=%d requestCode=%d supplyAttachments=%s "
+                        + "owners=%s modelVersion=%s supplyStateId=%d name=%s isValid=%s",
+                municipalityCode, observations, typeSupplyCode, managerCode, requestCode, supplyAttachmentsString,
+                ownersString, modelVersion, supplyStateId, name, isValid));
 
         if (supplyAttachments.size() == 0) {
             throw new BusinessException("El insumo debe contener al menos un adjunto.");
@@ -91,6 +117,8 @@ public class SupplyBusiness {
         }
         supplyEntity.setAttachments(attachments);
 
+        log.info("Attachments validated");
+
         // owners
         List<SupplyOwnerEntity> ownersEntity = new ArrayList<>();
         for (CreateSupplyOwnerDto owner : owners) {
@@ -116,9 +144,13 @@ public class SupplyBusiness {
         }
         supplyEntity.setOwners(ownersEntity);
 
+        log.info("Owners validated");
+
         if (name != null) {
             supplyEntity.setName(name);
         }
+
+        log.info("Name validated");
 
         supplyEntity.setCreatedAt(new Date());
         supplyEntity.setMunicipalityCode(municipalityCode);
@@ -127,8 +159,8 @@ public class SupplyBusiness {
         supplyEntity.setTypeSupplyCode(typeSupplyCode);
         supplyEntity.setRequestCode(requestCode);
         supplyEntity.setManagerCode(managerCode);
-        if (hasGeometryValidation != null) {
-            supplyEntity.setHasGeometryValidation(hasGeometryValidation);
+        if (isValid != null) {
+            supplyEntity.setValid(isValid);
         }
 
         if (modelVersion != null && !modelVersion.isEmpty()) {
@@ -136,6 +168,8 @@ public class SupplyBusiness {
         }
 
         supplyEntity = supplyService.createSupply(supplyEntity);
+
+        log.info("Supply created in database with id: " + supplyEntity.getId());
 
         return this.transformEntityToDto(supplyEntity);
     }
@@ -154,7 +188,9 @@ public class SupplyBusiness {
     }
 
     public Object getSuppliesByMunicipality(String municipalityCode, Integer page, List<Long> requests,
-                                            List<Long> states, Long managerCode) throws BusinessException {
+            List<Long> states, Long managerCode) throws BusinessException {
+
+        log.info("Get supplies by municipality business started");
 
         List<SupplyDto> suppliesDto = new ArrayList<>();
 
@@ -185,19 +221,39 @@ public class SupplyBusiness {
             }
         }
 
+        final String statesStringId = StringUtils
+                .join(statesEntity.stream().map(SupplyStateEntity::getId).collect(Collectors.toList()), ",");
+
         if (page == null) {
+
+            log.info(String.format("Filter without pagination: municipality=%s states=%s", municipalityCode,
+                    statesStringId));
             suppliesEntity = supplyService.getSuppliesByMunicipalityCodeAndStates(municipalityCode, statesEntity);
+
         } else {
 
             if (requests != null && requests.size() > 0) {
+
+                log.info(String.format(
+                        "Filter with pagination and requests: municipality=%s requests=%s states=%s page=%d perPage=%d",
+                        municipalityCode, StringUtils.join(requests, ","), statesStringId, page, 10));
+
                 pageEntity = supplyService.getSuppliesByMunicipalityCodeAndRequestsAndStatesPaginated(municipalityCode,
                         requests, statesEntity, page - 1, 10);
             } else {
-                pageEntity = supplyService.getSuppliesByMunicipalityCodeAndStatesPaginated(municipalityCode, managerCode,
-                        statesEntity, page - 1, 10);
+
+                log.info(String.format(
+                        "Filter with pagination but without requests: municipality=%s managerCode=%d states=%s page=%d perPage=%d",
+                        municipalityCode, managerCode, statesStringId, page - 1, 10));
+
+                pageEntity = supplyService.getSuppliesByMunicipalityCodeAndStatesPaginated(municipalityCode,
+                        managerCode, statesEntity, page - 1, 10);
             }
+
             suppliesEntity = pageEntity.toList();
         }
+
+        log.info("Supplies found " + suppliesEntity.size());
 
         for (SupplyEntity supplyEntity : suppliesEntity) {
             SupplyDto supplyDto = this.transformEntityToDto(supplyEntity);
@@ -212,6 +268,9 @@ public class SupplyBusiness {
             dataPaginatedDto.setTotalElements(pageEntity.getTotalElements());
             dataPaginatedDto.setTotalPages(pageEntity.getTotalPages());
             dataPaginatedDto.setSize(pageEntity.getSize());
+
+            log.info("result data" + dataPaginatedDto);
+
             return dataPaginatedDto;
         }
 
@@ -242,6 +301,9 @@ public class SupplyBusiness {
             supplyService.deleteSupplyById(supplyId);
 
         } catch (Exception e) {
+            String messageError = String.format("Error eliminando el insumo %d: %s", supplyId, e.getMessage());
+            SCMTracing.sendError(messageError);
+            log.error(messageError);
             throw new BusinessException("No se ha podido eliminar el insumo.");
         }
 
@@ -280,7 +342,7 @@ public class SupplyBusiness {
         supplyDto.setRequestCode(supplyEntity.getRequestCode());
         supplyDto.setModelVersion(supplyEntity.getModelVersion());
         supplyDto.setManagerCode(supplyEntity.getManagerCode());
-        supplyDto.setHasGeometryValidation(supplyEntity.getHasGeometryValidation());
+        supplyDto.setValid(supplyEntity.getValid());
 
         List<SupplyOwnerDto> ownersDto = new ArrayList<>();
         for (SupplyOwnerEntity ownerEntity : supplyEntity.getOwners()) {

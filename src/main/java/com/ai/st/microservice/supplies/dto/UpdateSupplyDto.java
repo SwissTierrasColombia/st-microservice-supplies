@@ -8,21 +8,25 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "UpdateSupplyDto")
 public class UpdateSupplyDto implements Serializable {
 
-	private static final long serialVersionUID = -1832068905400656799L;
+    private static final long serialVersionUID = -1832068905400656799L;
 
-	@ApiModelProperty(required = true, notes = "State ID")
-	private Long stateId;
+    @ApiModelProperty(required = true, notes = "State ID")
+    private Long stateId;
 
-	public UpdateSupplyDto() {
+    public UpdateSupplyDto() {
 
-	}
+    }
 
-	public Long getStateId() {
-		return stateId;
-	}
+    public Long getStateId() {
+        return stateId;
+    }
 
-	public void setStateId(Long stateId) {
-		this.stateId = stateId;
-	}
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
+    }
 
+    @Override
+    public String toString() {
+        return "UpdateSupplyDto{" + "stateId=" + stateId + '}';
+    }
 }
